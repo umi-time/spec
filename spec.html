@@ -1,0 +1,2736 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Umi‑Time Specification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Umi‑Time is a solar‑aligned time system based on umi units instead of civil clock hours."
+    />
+
+    <!-- Standalone spec assets -->
+    <link rel="stylesheet" href="css/spec.css" />
+
+    <!-- Optional: favicon for standalone viewing -->
+    <link rel="icon" type="image/png" href="./favicon.png" />
+  </head>
+
+  <body>
+    <div class="umi-region umi-pad" id="umi-spec">
+      <div id="umi-spec-columns">
+        <nav id="umi-spec-toc" aria-label="Specification Table of Contents">
+          <h2>Table of Contents</h2>
+          <ul id="toc-list"></ul>
+        </nav>
+        <main id="umi-spec-content">
+          <h1>Umi‑Time Technical Specification</h1>
+          <h3 role="doc-subtitle">Version 1.0</h3>
+          <dl class="spec-meta">
+            <dt>Status</dt>
+            <dd>Draft</dd>
+            <dt>Date</dt>
+            <dd>2026-10-12</dd>
+            <dt>License</dt>
+            <dd>MIT (see <a href="#licensing">Licensing</a>)</dd>
+          </dl>
+          <hr />
+          <ol class="spec-sections">
+            <li>
+              <h2>Overview</h2>
+
+              <p>
+                Umi‑Time is a UTC-based time system that represents the day as a
+                continuous
+                <span>\(0^\mathrm{u}\text{–}360^\mathrm{u}\)</span>
+                cycle. This uniform mapping ensures that umi values advance at a
+                constant rate everywhere on Earth, independent of the varying
+                length of the
+                <a href="#physical-solar-day">physical solar day</a>. Umi‑Time
+                is a presentation of UTC, not a new time scale: every Umi‑Time
+                value corresponds to exactly one UTC time of day, and the
+                conversion in either direction is exact.
+              </p>
+
+              <p>
+                While the umi progression is universal, the orientation of the
+                Umi‑Time dial is local and determined solely by the observer’s
+                longitude. Longitude sets the rotational offset that places
+                Umi‑Time noon at the top of the solar ring and Umi‑Time midnight
+                at the bottom, aligning the dial with the observer’s sky without
+                altering the underlying umi value.
+              </p>
+
+              <p>
+                Solar geometry—<a href="#sunrise-sunset">sunrise and sunset</a>,
+                twilight phases, and physical solar noon—is computed separately
+                and drawn on the fixed solar ring that surrounds the dial. These
+                features provide local daylight context but do not affect the
+                rate of umi progression or the dial’s longitude‑based
+                orientation.
+              </p>
+
+              <p>
+                Together, this separation of concerns makes Umi‑Time both
+                globally uniform and locally meaningful: a single planetary time
+                value enriched by the geometry of the day. This specification
+                defines:
+              </p>
+
+              <ul>
+                <li>the Umi‑Time system</li>
+                <li>the solar geometry inputs</li>
+                <li>the computational model</li>
+                <li>the dial orientation rules</li>
+                <li>the display conventions</li>
+                <li>the textual representation and conformance requirements</li>
+              </ul>
+
+              <p>Umi‑Time is an open standard. Anyone may implement it.</p>
+
+              <p>
+                The key words “shall”, “should”, and “may” in this specification
+                are to be interpreted as in the ISO/IEC Directives, Part&nbsp;2:
+                “shall” denotes a requirement, “should” a recommendation, and
+                “may” a permission. Examples, notes, and text marked informative
+                impose no requirements.
+              </p>
+            </li>
+            <li>
+              <h2>Definitions</h2>
+              <ol>
+                <li>
+                  <h3>Physical Solar Noon</h3>
+                  <p>
+                    The moment when the Sun reaches its highest altitude
+                    relative to the horizon at a given location. This moment may
+                    not coincide with
+                    <a href="#umi-time-noon">Umi‑Time noon</a> due to the
+                    equation of time.
+                  </p>
+                </li>
+                <li>
+                  <h3>Physical Solar Midnight</h3>
+                  <p>
+                    The moment when the Sun reaches its lowest altitude relative
+                    to the horizon at a given location. This moment may not
+                    coincide with
+                    <a href="#umi-time-midnight">Umi‑Time midnight</a> due to
+                    the equation of time.
+                  </p>
+                </li>
+                <li>
+                  <h3>Physical Solar Day</h3>
+                  <p>
+                    The interval between two successive
+                    <a href="#physical-solar-noon">physical solar noons</a> at a
+                    given longitude.<br />Its length varies slightly throughout
+                    the year due to orbital eccentricity and axial tilt.
+                  </p>
+                  <p>
+                    Umi‑Time does not adjust its
+                    <a href="#umi-time-umi">umi</a> progression based on the
+                    varying length of the
+                    <a href="#physical-solar-day">physical solar day</a>.
+                    However, the
+                    <a href="#physical-solar-day">physical solar‑day</a>
+                    variation affects
+                    <a href="#sunrise-sunset">sunrise and sunset</a> times
+                    slightly.
+                  </p>
+                </li>
+                <li>
+                  <h3>Sunrise / Sunset</h3>
+                  <p>
+                    The moments when the Sun’s upper limb crosses the horizon,
+                    corrected for atmospheric refraction.
+                  </p>
+                </li>
+                <li>
+                  <h3>Umi‑Time Umi</h3>
+                  <p>
+                    Umi is the basic unit of Umi‑Time, denoted by ᵘ. Umi are a
+                    continuous measure of daily progress mapped directly from
+                    UTC time.<br />They range from 0ᵘ to 360ᵘ, advancing
+                    uniformly over the 24‑hour UTC day reference.
+                  </p>
+                  <p>
+                    Umi‑Time umi are a rescaling of UTC. They do
+                    <strong>not</strong> measure Earth’s actual rotation and do
+                    <strong>not</strong> vary with the length of the
+                    <a href="#physical-solar-day">physical solar day</a
+                    >.<br />They provide a universal, constant measure of the
+                    day.
+                  </p>
+                </li>
+                <li>
+                  <h3>Umi‑Time Second</h3>
+                  <p>
+                    The subdivision of an <a href="#umi-time-umi">umi</a> used
+                    in textual representations, equal to 1/240 of an umi. One
+                    Umi‑Time second (umi‑second) corresponds to exactly one SI
+                    second. Umi‑seconds are numbered 000–239 within each umi and
+                    may carry a decimal fraction.
+                  </p>
+                </li>
+                <li>
+                  <h3>Umi‑Time Noon</h3>
+                  <p>
+                    The <a href="#umi-time-umi">umi</a> value that appears at
+                    the top of the Umi‑Time dial after applying the observer’s
+                    longitude‑based rotational offset. It represents the
+                    observer’s meridian‑aligned midpoint of the
+                    <a href="#umi-day">Umi‑Day</a>
+                    cycle.
+                  </p>
+                </li>
+                <li>
+                  <h3>Umi‑Time Midnight</h3>
+                  <p>
+                    The <a href="#umi-time-umi">umi</a> value that appears at
+                    the bottom of the Umi‑Time dial after applying the
+                    observer’s longitude‑based rotational offset. It represents
+                    the observer’s meridian‑aligned nadir of the
+                    <a href="#umi-day">Umi‑Day</a>
+                    cycle.
+                  </p>
+                </li>
+                <li>
+                  <h3>Umi‑Day</h3>
+
+                  <p>
+                    The continuous time span between one
+                    <a href="#umi-time-midnight">Umi‑Time Midnight</a> and the
+                    next <a href="#umi-time-midnight">Umi‑Time Midnight</a> at a
+                    given longitude. It represents the complete
+                    longitude‑aligned cycle of Umi‑Time for that location.
+                  </p>
+                </li>
+
+                <li>
+                  <h3>Umi‑Date</h3>
+
+                  <p>
+                    The civil calendar date associated with a specific
+                    <a href="#umi-day">Umi‑Day</a>. The Umi‑Date for a given
+                    Umi‑Day is the UTC calendar date in effect at
+                    <a href="#umi-time-noon">Umi‑Time Noon</a> for that
+                    longitude. Each <a href="#umi-day">Umi‑Day</a> has exactly
+                    one Umi‑Date.
+                  </p>
+                </li>
+                <li>
+                  <h3>Longitude Anchor</h3>
+                  <p>
+                    Umi‑Time umi are universal, but the orientation of the
+                    Umi‑Time dial is local. An observer’s longitude determines
+                    how the dial is rotated so that
+                    <a href="#umi-time-noon">Umi‑Time noon</a> appears at the
+                    top of the solar ring and
+                    <a href="#umi-time-midnight">Umi‑Time Midnight</a> at the
+                    bottom.
+                  </p>
+                  <p>
+                    Longitude does <strong>not</strong> change the umi value
+                    itself; it only sets the rotational offset that aligns the
+                    dial with the observer’s sky.
+                  </p>
+                </li>
+                <li>
+                  <h3>Dial</h3>
+                  <p>
+                    The rotating portion of the Umi‑Time face. It carries the
+                    umi markers only, with umi values increasing clockwise, and
+                    is rotated by the observer’s longitude.
+                  </p>
+                </li>
+                <li>
+                  <h3>Solar Ring</h3>
+                  <p>
+                    The fixed portion of the Umi‑Time face surrounding the dial.
+                    It carries solar‑geometry features such as
+                    <a href="#sunrise-sunset">sunrise and sunset</a> markers and
+                    twilight gradients, measured in degrees clockwise from
+                    <a href="#umi-time-midnight">Umi‑Time midnight</a> at the
+                    bottom.
+                  </p>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <h2>Core Concept</h2>
+
+              <p>
+                Umi‑Time represents the day as a full 360ᵘ cycle mapped
+                uniformly across the 24‑hour UTC day.<br />Each umi corresponds
+                to:
+              </p>
+
+              <pre><code>1/360 of a 24‑hour UTC day</code></pre>
+
+              <p>
+                This uniform mapping ensures that Umi‑Time umi advance at a
+                constant rate, remain intuitive, and pair cleanly with UTC time.
+              </p>
+
+              <p>
+                The observer’s longitude determines the orientation of the
+                Umi‑Time dial. Before applying any rotation, the dial defines
+                <span class="umi">0ᵘ</span> at the bottom of the watch face,
+                with umi values increasing clockwise. The dial is then rotated
+                by the observer’s longitude: clockwise for positive longitudes
+                and counterclockwise for negative longitudes, by the same number
+                of degrees as the observer’s longitude.<br />
+                After this rotation, the umi value appearing at the bottom is
+                Umi‑Time midnight, and the value at the top is Umi‑Time noon.
+                This establishes a single canonical anchor:
+                <span class="umi">0ᵘ</span> is the pre‑rotation bottom, and
+                <a href="#umi-time-midnight">Umi‑Time midnight</a> is the
+                post‑rotation bottom.
+              </p>
+
+              <p>
+                Solar geometry determines the placement of events on the solar
+                ring —
+                <a href="#physical-solar-noon">physical solar noon</a> near the
+                top,
+                <a href="#physical-solar-midnight">physical solar midnight</a>
+                near the bottom, and
+                <a href="#sunrise-sunset">sunrise/sunset</a> positioned
+                according to their true locations — but does not affect the umi
+                progression or dial orientation.
+              </p>
+
+              <p>
+                <a href="#umi-time-umi">Umi‑Time umi</a> are universal; the dial
+                orientation is local. Umi‑Time does not define a global solar
+                day boundary. When a calendar date is combined with a Umi‑Time
+                value, the date may be interpreted either as the universal UTC
+                calendar date or as the observer’s
+                <a href="#umi-date">Umi‑Date</a>, depending on whether the
+                representation includes local context.
+              </p>
+            </li>
+            <li>
+              <h2>Solar Geometry Inputs</h2>
+              <p>
+                The umi value itself requires only UTC. The solar ring requires
+                the following astronomical inputs:
+              </p>
+              <ul>
+                <li>
+                  <strong>Latitude (\(\phi\))</strong> — Observer’s north–south
+                  position on Earth.
+                </li>
+                <li>
+                  <strong>Longitude (\(\lambda\))</strong> — Observer’s
+                  east–west position; determines
+                  <a href="#umi-time-noon">Umi‑Time noon</a>/<a
+                    href="#umi-time-midnight"
+                    >Umi‑Time midnight</a
+                  >
+                  alignment.
+                </li>
+                <li>
+                  <strong>Solar declination (\(\delta\))</strong> — Sun’s
+                  angular position north or south of the celestial equator.
+                </li>
+                <li>
+                  <strong>Equation of time (EoT)</strong> — Difference between
+                  apparent solar time and mean solar time.
+                </li>
+                <li>
+                  <strong>Solar hour angle (H)</strong> — Angular distance of
+                  the Sun east or west of
+                  <a href="#physical-solar-noon">physical solar noon</a>.
+                </li>
+                <li>
+                  <strong>Solar altitude (\(\alpha\))</strong> — Angle of the
+                  Sun above the horizon.
+                </li>
+                <li>
+                  <strong>Solar azimuth (A)</strong> — Compass direction of the
+                  Sun along the horizon.
+                </li>
+                <li>
+                  <strong>Julian date (JD)</strong> — Continuous astronomical
+                  day count used for solar calculations.
+                </li>
+              </ul>
+              <p>
+                These values may be obtained from standard solar position
+                algorithms such as:
+              </p>
+              <ul>
+                <li>NOAA Solar Calculator</li>
+                <li>NREL SPA (Solar Position Algorithm)</li>
+                <li>Meeus Astronomical Algorithms</li>
+              </ul>
+            </li>
+            <li>
+              <h2>Computing Umi‑Time Umi</h2>
+              <p>
+                Umi‑Time uses a direct, uniform mapping from UTC time to a
+                0ᵘ–360ᵘ cycle.<br />This ensures that Umi‑Time advances at a
+                constant rate, remains intuitive, and pairs cleanly with UTC
+                time.
+              </p>
+              <ol>
+                <li>
+                  <h3>Direct UTC Mapping</h3>
+                  <p>
+                    Umi‑Time uses SI seconds as its underlying physical time
+                    unit. All computations are performed using UTC
+                    seconds-of-day.
+                  </p>
+                  <p>Umi‑Time umi are computed as:</p>
+                  <pre><code>UT = 360ᵘ × (UTC_seconds_of_day / 86400s)</code></pre>
+                  <p>Where:</p>
+                  <ul>
+                    <li>
+                      <code>UTC_seconds_of_day</code> is the number of elapsed
+                      SI seconds since 00:00:00 UTC.
+                    </li>
+                    <li>
+                      86400 is the number of SI seconds in a nominal UTC day.
+                    </li>
+                  </ul>
+                  <p>
+                    For textual representation, the umi and umi‑second fields
+                    are derived from the same quantity:
+                  </p>
+                  <pre><code>umi        = ⌊UTC_seconds_of_day / 240⌋
+umi-second = UTC_seconds_of_day mod 240</code></pre>
+                  <p>
+                    When <code>UTC_seconds_of_day</code> includes a fractional
+                    part, that fraction is carried by the umi‑second. The
+                    inverse conversion is exact:
+                  </p>
+                  <pre><code>UTC_seconds_of_day = umi × 240 + umi-second</code></pre>
+                  <p>This mapping ensures:</p>
+                  <ul>
+                    <li>Umi‑Time umi advance uniformly.</li>
+                    <li>Seconds in Umi‑Time match SI seconds.</li>
+                    <li>
+                      The slow hand rotates once every 24 hours at a constant
+                      speed.
+                    </li>
+                    <li>
+                      Umi‑Time remains simple, predictable, and universally
+                      understandable.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <h3>Continuous Umi Cycle</h3>
+                  <p>
+                    UT is a continuous value that increases smoothly throughout
+                    the day. To keep it within the 0ᵘ–360ᵘ range, it is
+                    normalized using:
+                  </p>
+                  <pre><code>UT = UT mod 360ᵘ</code></pre>
+                  <p>
+                    This wrap‑around ensures that the measure remains
+                    continuous, with no jumps when the value passes 360ᵘ and
+                    returns to 0ᵘ.
+                  </p>
+                </li>
+                <li>
+                  <h3>Separation of Umi Progression and Dial Orientation</h3>
+                  <p>
+                    The orientation of the Umi‑Time dial is determined
+                    <strong>solely by longitude</strong>. Longitude sets the
+                    rotational offset that places
+                    <a href="#umi-time-noon">Umi‑Time noon</a> at the top of the
+                    solar ring and
+                    <a href="#umi-time-midnight">Umi‑Time midnight</a> at the
+                    bottom.
+                  </p>
+
+                  <p>
+                    Solar geometry governs the placement of
+                    <a href="#sunrise-sunset">sunrise and sunset</a>, twilight
+                    phases, and other solar‑day complications on the fixed solar
+                    ring. These features are
+                    <strong>mapped relative to Umi‑Time midnight</strong>, but
+                    solar geometry <strong>does not affect the rate</strong> at
+                    which Umi‑Time umi advance.
+                  </p>
+
+                  <p>This separation provides:</p>
+                  <ul>
+                    <li>
+                      longitude‑accurate
+                      <a href="#umi-time-noon">Umi‑Time noon</a>/<a
+                        href="#umi-time-midnight"
+                        >Umi‑Time midnight</a
+                      >
+                      alignment
+                    </li>
+                    <li>
+                      solar‑accurate
+                      <a href="#sunrise-sunset">sunrise and sunset</a> and
+                      twilight positioning
+                    </li>
+                    <li>intuitive correspondence with civil time</li>
+                    <li>constant, uniform rate of umi advance</li>
+                  </ul>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <h2>Dial Orientation</h2>
+              <p>
+                The Umi‑Time dial is longitude‑oriented so that the dial aligns
+                with the observer’s local meridian. Solar geometry determines
+                <a href="#sunrise-sunset">sunrise and sunset</a> placement and
+                other solar‑day features on the solar ring, but dial orientation
+                is determined by longitude only and does not change with solar
+                geometry.
+              </p>
+              <p>
+                The <strong>dial</strong> is the rotating portion of the watch
+                face. It contains the <strong>umi markers only</strong>,
+                increasing clockwise.
+              </p>
+              <ol>
+                <li>
+                  <h3>Dial Rotation (Umi‑Time Noon &amp; Midnight Anchors)</h3>
+                  <p>
+                    <strong>Purpose:</strong><br />Align the dial so that
+                    Umi‑Time noon and Umi‑Time midnight always appear at fixed
+                    positions relative to the solar ring, regardless of date or
+                    solar geometry.
+                  </p>
+                  <p><strong>Inputs Used (Dial Only):</strong></p>
+                  <ul>
+                    <li>
+                      <strong>Longitude (λ)</strong> — determines the rotation
+                      of the dial so that:
+                      <ul>
+                        <li>
+                          Top of dial →
+                          <a href="#umi-time-noon">Umi‑Time noon</a>
+                        </li>
+                        <li>
+                          Bottom of dial →
+                          <a href="#umi-time-midnight">Umi‑Time midnight</a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                  <p><strong>Notes:</strong></p>
+                  <ul>
+                    <li>Dial orientation is determined by longitude only.</li>
+                  </ul>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <h2>Solar‑Geometry‑Based Visual Features</h2>
+              <p>
+                Umi‑Time supports optional solar‑day visualizations
+                (“complications”) that enrich the watch face with local solar
+                information.
+              </p>
+              <p>
+                The <strong>solar ring</strong> is a fixed portion of the watch
+                face that surrounds the dial. It contains the
+                <strong>sunrise/sunset markers</strong> and the
+                <strong>color gradients</strong> representing periods of the
+                day.
+              </p>
+              <p>
+                Solar geometry affects
+                <strong>what is drawn on the solar ring</strong>.
+              </p>
+              <ol>
+                <li>
+                  <h3>Variable Physical Solar Noon / Midnight Positions</h3>
+                  <p>
+                    The positions of
+                    <a href="#physical-solar-noon">physical solar noon</a> and
+                    <a href="#physical-solar-midnight"
+                      >physical solar midnight</a
+                    >
+                    on the Umi‑Time solar ring vary by small amounts over the
+                    course of the year, but are generally positioned very close
+                    to the top and bottom of the solar ring.
+                  </p>
+                  <ul>
+                    <li>
+                      <strong>Physical solar noon</strong> → Near the top of
+                      solar ring
+                    </li>
+                    <li>
+                      <strong>Physical solar midnight</strong> → Near the bottom
+                      of solar ring
+                    </li>
+                  </ul>
+                  <p>
+                    These positions do not change by any significant amount
+                    visually. So it is not generally useful to mark them
+                    explicitly on the solar ring.
+                  </p>
+                </li>
+                <li>
+                  <h3>Sunrise / Sunset Points (Solar Ring)</h3>
+                  <p>
+                    <strong>Purpose:</strong><br />Place
+                    <a href="#sunrise-sunset">sunrise and sunset</a> markers on
+                    the <strong>solar ring</strong> at their correct umi
+                    positions.
+                  </p>
+                  <p><strong>Inputs Used (Solar Ring):</strong></p>
+                  <ul>
+                    <li><strong>Latitude (\(\phi\))</strong></li>
+                    <li><strong>Solar declination (\(\delta\))</strong></li>
+                    <li><strong>Solar hour angle (H)</strong></li>
+                    <li><strong>Equation of Time (EoT)</strong></li>
+                    <li><strong>Julian date (JD)</strong></li>
+                    <li>
+                      <strong>Atmospheric refraction model (optional)</strong>
+                    </li>
+                    <li><strong>Terrain horizon model (optional)</strong></li>
+                  </ul>
+                  <p><strong>Notes:</strong></p>
+                  <ul>
+                    <li>
+                      These inputs determine <em>where</em>
+                      <a href="#sunrise-sunset">sunrise and sunset</a>
+                      appear on the solar ring.
+                    </li>
+                    <li>
+                      <a href="#sunrise-sunset">Sunrise and sunset</a>
+                      positions vary throughout the year and must be computed
+                      dynamically.
+                    </li>
+                  </ul>
+                  <ol>
+                    <li>
+                      <h4>
+                        Sky Gradients (Golden Hour, Blue Hour, Twilight) — Solar
+                        Ring
+                      </h4>
+                      <p>
+                        <strong>Purpose:</strong><br />Render twilight phases
+                        and color gradients on the
+                        <strong>solar ring</strong> around
+                        <a href="#sunrise-sunset">sunrise and sunset</a>.
+                      </p>
+                      <p><strong>Inputs Used (Solar Ring):</strong></p>
+                      <ul>
+                        <li><strong>Latitude (\(\phi\))</strong></li>
+                        <li>
+                          <strong>Solar declination (\(\delta\))</strong>
+                        </li>
+                        <li><strong>Solar altitude (\(\alpha\))</strong></li>
+                        <li><strong>Solar azimuth (A)</strong></li>
+                        <li><strong>Julian date (JD)</strong></li>
+                        <li><strong>Atmospheric refraction model</strong></li>
+                        <li>
+                          <strong
+                            >Civil / nautical / astronomical twilight altitude
+                            thresholds</strong
+                          >
+                        </li>
+                      </ul>
+                      <p><strong>Notes:</strong></p>
+                      <ul>
+                        <li>
+                          Twilight phases depend on solar altitude relative to
+                          the horizon.
+                        </li>
+                        <li>Gradients are drawn on the solar ring.</li>
+                      </ul>
+                    </li>
+                  </ol>
+                </li>
+                <li>
+                  <h3>Local Civil Time Indicator</h3>
+                  <p>
+                    <strong>Purpose:</strong><br />Display local civil time in
+                    relation to Umi‑Time.
+                  </p>
+                  <p><strong>Inputs Used:</strong></p>
+                  <ul>
+                    <li><strong>Timezone offset (UTC±X)</strong></li>
+                    <li>
+                      <strong>Daylight saving rules (if applicable)</strong>
+                    </li>
+                  </ul>
+                  <p><strong>Notes:</strong></p>
+                  <ul>
+                    <li>
+                      Civil time is mapped onto Umi‑Time umi as an auxiliary
+                      indicator.
+                    </li>
+                    <li>
+                      Timezone does <strong>not</strong> affect dial
+                      orientation.
+                    </li>
+                    <li>
+                      This complication helps users relate Umi‑Time umi to
+                      familiar civil time.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <h3>Date Representation</h3>
+                  <p>
+                    Implementations that display solar geometry may optionally
+                    display the <a href="#umi-date">Umi‑Date</a> corresponding
+                    to the observer’s solar day.
+                  </p>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <h2>Solar Event Computation Formulas</h2>
+              <p>
+                Umi‑Time uses two similar unit systems to describe time and
+                angular quantities:
+              </p>
+              <ul>
+                <li>
+                  <strong>Umi‑Time</strong> — Umi‑Time <strong>umi</strong> (a
+                  time coordinate derived from UTC)
+                </li>
+                <li>
+                  <strong>°</strong> — (degrees) physical angle on the solar
+                  ring (a spatial coordinate, not to be confused with Umi‑Time
+                  umi)
+                </li>
+              </ul>
+              <p>
+                The solar ring defines
+                <strong>0° at Umi‑Time midnight</strong>, located at the
+                <strong>bottom</strong> of the watch face.<br />Angles increase
+                <strong>clockwise</strong>.
+              </p>
+              <p>
+                All solar events are computed in UTC, converted to Umi‑Time,
+                then mapped to solar‑ring angles relative to Umi‑Time midnight.
+              </p>
+              <ol>
+                <li>
+                  <h3>Umi Conversion</h3>
+                  <p>For any event time expressed in UTC hours:</p>
+                  <p>
+                    \[ \text{UT} = \frac{\text{UTC hours}}{24} \times
+                    360^\mathrm{u} \]
+                  </p>
+                  <p>
+                    Example:<br />08:00 UTC → \( \frac{8}{24} \times
+                    360^\mathrm{u} = 120^\mathrm{u} \)
+                  </p>
+                </li>
+                <li>
+                  <h3>Umi‑Time Midnight Moment</h3>
+
+                  <p>
+                    Umi‑Time midnight is the moment represented by the bottom of
+                    the Umi‑Time dial. This value defines the 0° reference of
+                    the fixed solar ring.
+                  </p>
+
+                  <p>
+                    Longitude determines where Umi‑Time midnight falls on the
+                    0ᵘ–360ᵘ dial. Using the standard degree‑to‑umi conversion,
+                    it is computed as:
+                  </p>
+
+                  <p style="text-align: center">
+                    \[ UT_{\text{mid}} = \left( \left( 360 - \lambda \right)
+                    \times \frac{1^\mathrm{u}}{1^\circ} \right) \bmod
+                    360^\mathrm{u} \]
+                  </p>
+                </li>
+
+                <li id="dial-rotation-angle">
+                  <h3>Dial Rotation Angle (°)</h3>
+                  <p>
+                    The dial rotates so that Umi‑Time midnight appears at 0° at
+                    the bottom of the solar ring. Because Umi‑Time midnight is
+                    defined by longitude, the required physical rotation of the
+                    dial is directly determined by the observer’s longitude.
+                  </p>
+
+                  <p style="text-align: center">
+                    \[ \theta_{\text{rotation}} = \lambda \]
+                  </p>
+
+                  <p>
+                    Positive longitudes rotate the dial clockwise; negative
+                    longitudes rotate it counterclockwise.
+                  </p>
+                </li>
+                <li id="solar-ring-angle-mapping">
+                  <h3>Solar Ring Angle Mapping</h3>
+                  <p>
+                    Solar events are expressed in Umi‑Time. To place an event on
+                    the fixed solar ring, its UT value is converted to degrees
+                    and mapped relative to Umi‑Time midnight.
+                  </p>
+
+                  <p style="text-align: center">
+                    \[ \theta_{\text{event}} = \left( \left( (UT_{\text{event}}
+                    - UT_{\text{mid}}) + 360^\mathrm{u} \right) \times
+                    \frac{1^\circ}{1^\mathrm{u}} \right) \bmod 360^\circ \]
+                  </p>
+
+                  <p>
+                    This yields the event’s physical angle on the solar ring,
+                    with Umi‑Time midnight at 0° at the bottom and angles
+                    increasing clockwise.
+                  </p>
+                </li>
+                <li>
+                  <h3>Core Solar Geometry</h3>
+
+                  <p>
+                    This section defines all solar‑geometry quantities required
+                    for computing
+                    <a href="#sunrise-sunset">sunrise and sunset</a>, and
+                    related solar events. All formulas are self‑contained and
+                    require only the observer’s location and the UTC date/time.
+                    Explanation of these quantities is beyond the scope of this
+                    specification, but references are provided for further
+                    study.
+                  </p>
+
+                  <p>
+                    <strong>Note on trigonometric notation:</strong>
+                    In this and later sections, trigonometric functions are
+                    written with a degree symbol (e.g., sin°(x), cos°(x),
+                    tan°(x)) to indicate that their arguments are interpreted as
+                    degrees rather than radians. This avoids the need for
+                    explicit degree‑to‑radian conversion inside the formulas and
+                    keeps all angular quantities consistently expressed in
+                    degrees. Inverse trigonometric functions written with a
+                    degree symbol (e.g., arcsin°(x), arccos°(x),
+                    atan2°(y,&nbsp;x)) likewise return degrees. Most programming
+                    implementations will require explicit conversion to radians
+                    before using standard trigonometric functions.
+                  </p>
+
+                  <p>
+                    <strong>Evaluation time:</strong> the time‑dependent
+                    quantities below (in particular \(\delta\) and EoT) shall be
+                    evaluated at the UTC instant of the event being computed.
+                    Implementations shall first evaluate them at 12:00 UTC on
+                    the date of interest to obtain an estimate of each event
+                    time, then re‑evaluate at the estimated event time and
+                    recompute the event. One such iteration is sufficient to
+                    meet the accuracy requirements of this specification.
+                  </p>
+                  <ol>
+                    <li>
+                      <h4>Julian Date</h4>
+
+                      <p>
+                        The Julian Date (JD) is the continuous count of days
+                        since noon on 1&nbsp;January 4713&nbsp;BC (proleptic
+                        Julian calendar); the Julian Century \(T\) is measured
+                        from the J2000.0 epoch. Start by separating the date
+                        into year, month, day, hour, minutes and seconds
+                        components, combining the hours, minutes and seconds
+                        into a value representing a partial day. The symbols in
+                        this subsection are local to the Julian Date
+                        computation.
+                      </p>
+
+                      <p style="text-align: center">
+                        \[ Y = \text{year} \] \[ M = \text{month (1-12)} \] \[ D
+                        = \text{day (1-31)} \] \[ h = \text{hour (0-23)} \] \[ m
+                        = \text{minutes (0-59)} \] \[ s = \text{seconds (0-59)}
+                        \] \[ t = h + \frac{m}{60} + \frac{s}{3600} \]
+                      </p>
+
+                      <p>
+                        If the month is January or February, treat it as the
+                        13th or 14th month of the previous year:
+                      </p>
+
+                      <p style="text-align: center">
+                        \[ \text{if } M \leq 2, \text{ then } Y' = Y - 1, M' = M
+                        + 12 \text{, else } Y' = Y, M' = M \]
+                      </p>
+
+                      <p>Next, compute the factors A, B, C and E as follows:</p>
+
+                      <p style="text-align: center">
+                        \[ A = \left\lfloor \frac{Y'}{100} \right\rfloor \] \[ B
+                        = 2 - A + \left\lfloor \frac{A}{4} \right\rfloor \] \[ C
+                        = \left\lfloor 365.25 \cdot (Y' + 4716) \right\rfloor \]
+                        \[ E = \left\lfloor 30.6001 \cdot (M' + 1) \right\rfloor
+                        \]
+                      </p>
+
+                      <p>Finally, compute the Julian Date:</p>
+
+                      <p style="text-align: center">
+                        \[ JD = D + B + C + E - 1524.5 + \frac{t}{24} \]
+                      </p>
+
+                      <p>For convenience, the Julian Century is:</p>
+
+                      <p style="text-align: center">
+                        \[ T = \frac{JD - 2451545.0}{36525} \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Solar Mean Longitude</h4>
+
+                      <p style="text-align: center">
+                        \[ L_0 = 280.46646^\circ + 36000.76983^\circ \cdot T +
+                        0.0003032^\circ \cdot T^2 \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Solar Mean Anomaly</h4>
+
+                      <p style="text-align: center">
+                        \[ M = 357.52911^\circ + 35999.05029^\circ \cdot T -
+                        0.0001537^\circ \cdot T^2 \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Earth Orbit Eccentricity</h4>
+
+                      <p style="text-align: center">
+                        \[ e = 0.016708634 - 0.000042037 \cdot T - 0.0000001267
+                        \cdot T^2 \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Sun’s Equation of Center</h4>
+
+                      <p style="text-align: center">
+                        \[ C = \sin^\circ(M) \cdot (1.914602 - T \cdot (0.004817
+                        + 0.000014 \cdot T)) + \sin^\circ(2M) \cdot (0.019993 -
+                        0.000101 \cdot T) + \sin^\circ(3M) \cdot 0.000289 \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Ecliptic Longitude of the Sun</h4>
+
+                      <p style="text-align: center">
+                        \[ \lambda_\odot = L_0 + C \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>True Anomaly of the Sun</h4>
+
+                      <p style="text-align: center">\[ \nu = M + C \]</p>
+                    </li>
+                    <li>
+                      <h4>Radius Vector of the Sun</h4>
+
+                      <!-- (1.000001018*(1 - EEO*EEO))/(1 + EEO*COS(RADIANS(STA)))  -->
+                      <p style="text-align: center">
+                        \[ r = \frac{1.000001018 \cdot (1 - e^2)}{1 + e \cdot
+                        \cos^\circ(\nu)} \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Apparent Longitude of the Sun</h4>
+
+                      <p style="text-align: center">
+                        \[ \lambda_{\text{sun}} = \lambda_\odot - 0.00569^\circ
+                        - 0.00478^\circ \cdot \sin^\circ(125.04^\circ -
+                        1934.136^\circ \cdot T) \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Mean Obliquity of the Ecliptic</h4>
+                      <!-- 23 + (26 + ((21.448 - JC*(46.815 + JC*(0.00059 - JC*0.001813))))/60)/60 -->
+                      <p style="text-align: center">
+                        \[ \epsilon_0 = 23 + \frac{26 + \frac{21.448 - T \cdot
+                        (46.815 + T \cdot (0.00059 - T \cdot
+                        0.001813))}{60}}{60} \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Obliquity Correction</h4>
+
+                      <p style="text-align: center">
+                        \[ \epsilon = \epsilon_0 + 0.00256^\circ \cdot
+                        \cos^\circ(125.04^\circ - 1934.136^\circ \cdot T) \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Right Ascension of the Sun</h4>
+
+                      <p style="text-align: center">
+                        \[ \alpha = \operatorname{atan2}^\circ\left(
+                        \cos^\circ(\epsilon) \cdot
+                        \sin^\circ(\lambda_{\text{sun}}),
+                        \cos^\circ(\lambda_{\text{sun}}) \right) \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Solar Declination</h4>
+
+                      <p style="text-align: center">
+                        \[ \delta = \arcsin^\circ\left( \sin^\circ(\epsilon)
+                        \cdot \sin^\circ(\lambda_{\text{sun}}) \right) \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Obliquity Coefficient</h4>
+
+                      <p style="text-align: center">
+                        \[ y = \left( \tan^\circ\left( \frac{\epsilon}{2}
+                        \right) \right)^2 \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Equation of Time</h4>
+
+                      <p>
+                        The Equation of Time (EoT) expresses the difference
+                        between apparent solar time and mean solar time, in
+                        minutes. The bracketed term is an angle in radians; the
+                        factor \(180/\pi\) converts it to degrees and the factor
+                        4 converts degrees to minutes of time:
+                      </p>
+
+                      <p style="text-align: center">
+                        \[ \text{EoT} = 4 \cdot \frac{180}{\pi} \left( y
+                        \sin^\circ(2L_0) - 2e \sin^\circ M + 4ey \sin^\circ M
+                        \cos^\circ(2L_0) - 0.5y^2 \sin^\circ(4L_0) - 1.25 e^2
+                        \sin^\circ(2M) \right) \]
+                      </p>
+                    </li>
+                  </ol>
+                </li>
+                <li>
+                  <h3>Solar Event Formulas (Umi‑Time)</h3>
+
+                  <p>Each solar event is expressed in umi.</p>
+
+                  <ol>
+                    <li>
+                      <h4>Sunrise / Sunset Hour Angle</h4>
+
+                      <p>
+                        The <a href="#sunrise-sunset">sunrise/sunset</a> hour
+                        angle \(H_0\) is computed using standard solar‑position
+                        equations:
+                      </p>
+
+                      <p style="text-align: center">
+                        \[ H_0 = \arccos^\circ\left( \frac{\sin^\circ h_0 -
+                        \sin^\circ\phi \cdot \sin^\circ\delta} {\cos^\circ\phi
+                        \cdot \cos^\circ\delta} \right) \]
+                      </p>
+
+                      <p>Where:</p>
+
+                      <ul>
+                        <li>\(\phi\) = latitude</li>
+                        <li>\(\delta\) = solar declination</li>
+                        <li>
+                          \(h_0\) = altitude threshold (≈ −0.833° including
+                          refraction)
+                        </li>
+                      </ul>
+
+                      <p>
+                        Note: The hour angle is undefined when the argument of
+                        \(\arccos^\circ\) lies outside \([-1, 1]\), i.e. when
+                        the Sun is circumpolar at the threshold \(h_0\). If the
+                        argument is less than \(-1\) the Sun remains above
+                        \(h_0\) for the whole day (no sunset); if it is greater
+                        than \(+1\) the Sun remains below \(h_0\) for the whole
+                        day (no sunrise). Implementations shall detect both
+                        cases, skip the
+                        <a href="#sunrise-sunset">sunrise/sunset</a>
+                        calculations, and distinguish them so that the solar
+                        ring can be rendered as continuous day or continuous
+                        night.
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Physical Solar Midnight (Umi‑Time)</h4>
+
+                      <p style="text-align: center">
+                        \[ UT_{\text{solar\,mid}} = \left( \left( -\lambda -
+                        \left( \text{EoT} \times \frac{1^\circ}{4\ \text{min}}
+                        \right) \right) \times \frac{1^\mathrm{u}}{1^\circ} +
+                        360^\mathrm{u} \right) \bmod 360^\mathrm{u} \]
+                      </p>
+
+                      <p>
+                        This is distinct from
+                        <a href="#umi-time-midnight">Umi‑Time midnight</a>
+                        \(UT_{\text{mid}}\), which depends on longitude only.
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Physical Solar Noon (Umi‑Time)</h4>
+
+                      <p style="text-align: center">
+                        \[ UT_{\text{noon}} = \left( \left( 180^\circ - \lambda
+                        - \left( \text{EoT} \times \frac{1^\circ}{4\ \text{min}}
+                        \right) \right) \times \frac{1^\mathrm{u}}{1^\circ} +
+                        360^\mathrm{u} \right) \bmod 360^\mathrm{u} \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Sunrise Time (Umi‑Time)</h4>
+
+                      <p>
+                        <a href="#sunrise-sunset">Sunrise</a> occurs \(H_0\)
+                        degrees before
+                        <a href="#physical-solar-noon">physical solar noon</a>,
+                        converted to <a href="#umi-time-umi">umi</a>:
+                      </p>
+
+                      <p style="text-align: center">
+                        \[ UT_{\text{sunrise}} = \left( UT_{\text{noon}} -
+                        \left( H_0 \times \frac{1^\mathrm{u}}{1^\circ} \right) +
+                        360^\mathrm{u} \right) \bmod 360^\mathrm{u} \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Sunset Time (Umi‑Time)</h4>
+
+                      <p>
+                        <a href="#sunrise-sunset">Sunset</a> occurs \(H_0\)
+                        degrees after
+                        <a href="#physical-solar-noon">physical solar noon</a>,
+                        converted to <a href="#umi-time-umi">umi</a>:
+                      </p>
+
+                      <p style="text-align: center">
+                        \[ UT_{\text{sunset}} = \left( UT_{\text{noon}} + \left(
+                        H_0 \times \frac{1^\mathrm{u}}{1^\circ} \right) +
+                        360^\mathrm{u} \right) \bmod 360^\mathrm{u} \]
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Daylight Length (Umi‑Time)</h4>
+
+                      <p>
+                        Daylight length is twice the sunrise/sunset hour angle,
+                        expressed in umi:
+                      </p>
+
+                      <p style="text-align: center">
+                        \[ \text{Daylight Length} = 2 H_0 \times
+                        \frac{1^\mathrm{u}}{1^\circ} \]
+                      </p>
+                    </li>
+                  </ol>
+                </li>
+                <li>
+                  <h3>Twilight Boundaries (Umi‑Time)</h3>
+                  <p>Twilight boundaries use altitude thresholds:</p>
+                  <ul>
+                    <li>Astronomical: \( h = -18^\circ \)</li>
+                    <li>Nautical: \( h = -12^\circ \)</li>
+                    <li>Civil: \( h = -6^\circ \)</li>
+                    <li>
+                      Blue hour (informative convention): \( h \approx -4^\circ
+                      \)
+                    </li>
+                    <li>
+                      Golden hour (informative convention): \( h \approx
+                      +6^\circ \)
+                    </li>
+                  </ul>
+                  <p>General hour‑angle formula:</p>
+                  <p style="text-align: center">
+                    \[ H(h) = \arccos^\circ\!\left( \frac{ \sin^\circ h -
+                    \sin^\circ\phi \cdot \sin^\circ\delta }{ \cos^\circ\phi
+                    \cdot \cos^\circ\delta } \right) \]
+                  </p>
+
+                  <p>Morning event (Umi‑Time):</p>
+                  <p style="text-align: center">
+                    \[ UT_{\text{event, AM}} = \left( UT_{\text{noon}} - \left(
+                    H(h) \times \frac{1^\mathrm{u}}{1^\circ} \right) +
+                    360^\mathrm{u} \right) \bmod 360^\mathrm{u} \]
+                  </p>
+
+                  <p>Evening event (Umi‑Time):</p>
+                  <p style="text-align: center">
+                    \[ UT_{\text{event, PM}} = \left( UT_{\text{noon}} + \left(
+                    H(h) \times \frac{1^\mathrm{u}}{1^\circ} \right) +
+                    360^\mathrm{u} \right) \bmod 360^\mathrm{u} \]
+                  </p>
+                  <p>
+                    Note: As for sunrise and sunset, the hour angle is undefined
+                    when the Sun is circumpolar at the threshold \(h\). An
+                    argument less than \(-1\) means the Sun stays above \(h\)
+                    all day; an argument greater than \(+1\) means it stays
+                    below \(h\) all day. Implementations shall detect and
+                    distinguish both cases and skip the associated twilight
+                    event.
+                  </p>
+                </li>
+                <li>
+                  <h3>Solar Ring Angles for All Events</h3>
+                  <p>
+                    After computing Umi‑Time for each event, its physical angle
+                    on the fixed solar ring is obtained using the Solar Ring
+                    Angle Mapping formula
+                    <a href="#solar-ring-angle-mapping">defined earlier</a>.
+                  </p>
+
+                  <p>This mapping applies to all solar events:</p>
+                  <ul>
+                    <li>Astronomical twilight (AM/PM)</li>
+                    <li>Nautical twilight (AM/PM)</li>
+                    <li>Civil twilight (AM/PM)</li>
+                    <li>Blue hour (AM/PM)</li>
+                    <li>Golden hour (AM/PM)</li>
+                    <li><a href="#sunrise-sunset">Sunrise</a></li>
+                    <li><a href="#sunrise-sunset">Sunset</a></li>
+                    <li>
+                      <a href="#physical-solar-midnight"
+                        >Physical solar midnight</a
+                      >
+                    </li>
+                    <li>
+                      <a href="#physical-solar-noon">Physical solar noon</a>
+                    </li>
+                  </ul>
+
+                  <p>
+                    All angles are drawn on the
+                    <strong>fixed solar ring</strong>, with the
+                    <strong>dial rotating beneath it</strong>.
+                  </p>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <h2>Accuracy Requirements</h2>
+              <ol>
+                <li>
+                  <h3>Solar Position Accuracy</h3>
+                  <p>
+                    Solar‑position accuracy affects the placement of
+                    <a href="#sunrise-sunset">sunrise, sunset</a>,
+                    <a href="#physical-solar-noon">physical solar noon</a>, and
+                    <a href="#physical-solar-midnight"
+                      >physical solar midnight</a
+                    >
+                    on the solar ring.
+                  </p>
+                  <p>Implementations should achieve:</p>
+                  <ul>
+                    <li>±0.1° solar azimuth accuracy</li>
+                    <li>±0.1° solar altitude accuracy</li>
+                    <li>
+                      ±10 second
+                      <a href="#sunrise-sunset">sunrise/sunset</a> accuracy
+                    </li>
+                  </ul>
+                  <p>
+                    These values are achievable using the self‑contained
+                    solar‑geometry formulas provided in this specification and
+                    are sufficient for correct visual placement of all solar‑day
+                    features on the solar ring.
+                  </p>
+                </li>
+                <li>
+                  <h3>Time Synchronization</h3>
+                  <p>Civil time input should be synchronized to:</p>
+                  <ul>
+                    <li>NTP</li>
+                    <li>GPS</li>
+                    <li>OS system clock</li>
+                  </ul>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <h2>Textual representation of Umi‑Time</h2>
+
+              <ol>
+                <li>
+                  <h3>Scope</h3>
+
+                  <p>
+                    This section specifies the textual representations of
+                    Umi‑Time for use in data interchange, documentation, and
+                    user interfaces. It defines the normative formats for
+                    expressing Umi‑Time as a standalone value, as well as its
+                    combination with a calendar date. The formats described
+                    herein include both basic and extended representations,
+                    optional local context suffixes, and rules for
+                    disambiguation when Umi‑Time and UTC time may appear in the
+                    same context.
+                  </p>
+
+                  <p>
+                    The representations defined in this section are patterned
+                    after the conventions of ISO&nbsp;8601 and are intended to
+                    be compatible with future extensions of that standard. These
+                    representations do not redefine UTC time, do not modify the
+                    semantics of ISO&nbsp;8601 date formats, and do not impose
+                    requirements on systems that do not implement Umi‑Time.
+                  </p>
+
+                  <p>
+                    This section does not specify computational methods for
+                    determining Umi‑Time, nor does it define algorithms for
+                    converting between Umi‑Time and UTC time. Such methods are
+                    defined elsewhere in this specification. The present section
+                    concerns only the normative syntax, structure, and
+                    interpretation of Umi‑Time textual formats.
+                  </p>
+                </li>
+
+                <li>
+                  <h3>Normative references</h3>
+
+                  <p>
+                    The following referenced documents are indispensable for the
+                    application of this section. For dated references, only the
+                    edition cited applies. For undated references, the latest
+                    edition of the referenced document (including any
+                    amendments) applies.
+                  </p>
+
+                  <ul>
+                    <li>
+                      <strong>ISO&nbsp;8601‑1</strong>,
+                      <em
+                        >Date and time — Representations for information
+                        interchange — Part&nbsp;1: Basic rules</em
+                      >
+                    </li>
+
+                    <li>
+                      <strong>ISO&nbsp;8601‑2</strong>,
+                      <em
+                        >Date and time — Representations for information
+                        interchange — Part&nbsp;2: Extensions</em
+                      >
+                    </li>
+
+                    <li>
+                      <strong>ISO&nbsp;80000‑3</strong>,
+                      <em
+                        >Quantities and units — Part&nbsp;3: Space and time</em
+                      >
+                    </li>
+
+                    <li>
+                      <strong>ISO/IEC&nbsp;14977</strong>,
+                      <em
+                        >Extended Backus–Naur Form (EBNF) — Syntax notation</em
+                      >
+                    </li>
+
+                    <li>
+                      <strong>ITU‑R Recommendation TF.460</strong>,
+                      <em>Standard‑frequency and time‑signal emissions</em>
+                      (definition of UTC)
+                    </li>
+                  </ul>
+
+                  <p>
+                    Informative references to astronomical models, solar
+                    ephemerides, or computational methods for determining
+                    Umi‑Time may be provided elsewhere in this specification,
+                    but they are not required for interpreting the textual
+                    formats defined in this section.
+                  </p>
+                </li>
+
+                <li>
+                  <h3>Terms and definitions</h3>
+
+                  <p>
+                    For the purposes of this section, the following terms and
+                    definitions apply. Terms defined elsewhere in this
+                    specification, or in ISO&nbsp;8601, shall retain their
+                    established meanings unless explicitly redefined here.
+                  </p>
+
+                  <ul>
+                    <li>
+                      <strong>Umi‑Time</strong><br />
+                      A representation of the position within the UTC day
+                      expressed in Umi‑Time umi and umi‑seconds. Umi‑Time is a
+                      global, location‑independent representation of UTC time of
+                      day.
+                    </li>
+
+                    <li>
+                      <strong>Umi‑Time umi</strong><br />
+                      A unit representing one three‑hundred‑and‑sixtieth of a
+                      UTC day. Umi‑Time umi are numbered from 000 to 359,
+                      increasing monotonically through the UTC day.
+                    </li>
+
+                    <li>
+                      <strong>Umi‑Time second</strong><br />
+                      A subdivision of a Umi‑Time umi equal to 1/240 of that
+                      umi. Umi‑Time seconds are numbered from 000 to 239 and may
+                      carry an optional decimal fraction. One Umi‑Time second
+                      corresponds to exactly one SI second.
+                    </li>
+
+                    <li>
+                      <strong>Basic Umi‑Time format</strong><br />
+                      A fixed‑width textual representation of Umi‑Time
+                      consisting of a three‑digit Umi‑Time umi field followed by
+                      a three‑digit Umi‑Time second field, without separators,
+                      optionally followed by a fraction.
+                    </li>
+
+                    <li>
+                      <strong>Extended Umi‑Time format</strong><br />
+                      A textual representation of Umi‑Time in which the Umi‑Time
+                      umi and Umi‑Time second fields are separated by a colon
+                      (<code>:</code>), improving human readability while
+                      preserving fixed‑width fields, optionally followed by a
+                      fraction.
+                    </li>
+
+                    <li>
+                      <strong>Fraction</strong><br />
+                      An optional decimal fraction of the Umi‑Time second,
+                      consisting of a full stop (<code>.</code>) followed by one
+                      or more digits, appended to the Umi‑Time second field.
+                    </li>
+
+                    <li>
+                      <strong>U‑separator</strong><br />
+                      The literal character <code>U</code> used to separate a
+                      UTC calendar date from a Umi‑Time value. The U‑separator
+                      distinguishes Umi‑Time from UTC time in combined date–time
+                      representations.
+                    </li>
+
+                    <li>
+                      <strong>Local context suffix</strong><br />
+                      An optional annotation appended to a Umi‑Time value that
+                      conveys location‑dependent or observer‑dependent
+                      information, such as longitude or segment‑of‑day
+                      classification. Local context suffixes do not alter the
+                      umi or umi‑second fields, but their presence determines
+                      how an accompanying calendar date is interpreted.
+                    </li>
+
+                    <li>
+                      <strong>Longitude offset suffix</strong><br />
+                      A local context suffix expressing the observer’s longitude
+                      in degrees, using a sign (<code>+</code> east,
+                      <code>-</code> west) followed by a three‑digit value.
+                    </li>
+
+                    <li>
+                      <strong>Day‑phase suffix</strong><br />
+                      A local context suffix identifying which of twenty‑four
+                      equal phases of the Umi‑Day contains the value, expressed
+                      as
+                      <code>P&lt;k&gt;</code> where <code>k</code> is the
+                      zero‑based phase index.
+                    </li>
+
+                    <li>
+                      <strong>Segment code suffix</strong><br />
+                      A local context suffix identifying the observer’s position
+                      within a geometric subdivision of the Umi-Day. Segment
+                      codes are expressed as
+                      <code>S&lt;k&gt;/&lt;n&gt;</code>, where <code>k</code> is
+                      the zero‑based index of the segment, and <code>n</code> is
+                      the number of segments. An optional refinement
+                      (<code>+u</code>) may indicate umi into the segment.
+                    </li>
+
+                    <li>
+                      <strong>Disambiguation</strong><br />
+                      The process of determining whether a six‑digit time value
+                      represents an ISO&nbsp;8601 time (<code>hhmmss</code>) or
+                      a Umi‑Time (<code>uuusss</code>). Disambiguation may rely
+                      on context, the presence of the U‑separator, or the use of
+                      extended Umi‑Time formats.
+                    </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <h3>General principles</h3>
+
+                  <p>
+                    Umi‑Time expresses the position within the UTC day using two
+                    fixed‑width numeric fields: a three‑digit umi value and a
+                    three‑digit umi‑second value, the latter optionally followed
+                    by a decimal fraction. These fields form a continuous,
+                    cyclic, location‑independent representation of the 24‑hour
+                    UTC day.
+                  </p>
+
+                  <p>
+                    Textual representations of Umi‑Time shall use fixed‑width,
+                    zero‑padded decimal fields to ensure unambiguous
+                    interpretation and compatibility with ISO&nbsp;8601‑style
+                    parsing. The umi field spans \(000\text{–}359\) and the
+                    umi‑second field spans \(000\text{–}239\), with any fraction
+                    keeping the umi‑second strictly below 240. These ranges are
+                    normative.
+                  </p>
+
+                  <p>
+                    Umi‑Time may appear either as a standalone value or combined
+                    with a calendar date. When combined with a date, the literal
+                    character <code>U</code> shall introduce the Umi‑Time
+                    component, ensuring clear distinction from ISO&nbsp;8601 UTC
+                    date–time formats. Because a Umi‑Time value is always UTC,
+                    no zone designator (such as ISO&nbsp;8601 <code>Z</code> or
+                    <code>±hh:mm</code>) shall appear in any Umi‑Time
+                    representation.
+                  </p>
+
+                  <p>
+                    Optional local‑context suffixes—such as longitude offsets or
+                    segment codes—may follow a Umi‑Time value. These suffixes
+                    shall not modify the underlying umi or umi‑second fields;
+                    their effect on the interpretation of an accompanying
+                    calendar date is defined in
+                    <a href="#date-interpretation">Date interpretation</a>.
+                  </p>
+
+                  <p>
+                    In contexts where both UTC time and Umi‑Time may appear,
+                    implementations shall apply the disambiguation rules defined
+                    in this section. The presence of the U‑separator or the
+                    extended Umi‑Time format shall be used to avoid ambiguity.
+                  </p>
+
+                  <p>
+                    This section defines only the textual representation of
+                    Umi‑Time. Computational methods for determining Umi‑Time or
+                    converting between Umi‑Time and UTC are specified elsewhere
+                    in this document.
+                  </p>
+                </li>
+
+                <li>
+                  <h3>Basic Umi‑Time format</h3>
+
+                  <p>
+                    The basic Umi‑Time format provides a compact,
+                    machine‑oriented representation of a Umi‑Time moment. It
+                    consists of two numeric fields presented as a single
+                    contiguous value. The structure and interpretation of these
+                    fields are defined in the following subsections.
+                  </p>
+
+                  <ol>
+                    <li>
+                      <h4>Field definitions</h4>
+
+                      <p>
+                        The basic Umi‑Time format consists of two numeric
+                        fields. The first field is the Umi‑Time
+                        <em>umi</em> value, representing the position within the
+                        360‑umi cycle. The second field is the Umi‑Time
+                        <em>umi‑second</em> value, representing the fractional
+                        subdivision of a single umi. The umi‑second field may be
+                        followed by an optional decimal fraction. These fields
+                        together express a complete Umi‑Time moment.
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Basic format</h4>
+
+                      <p>
+                        The basic Umi‑Time format is a six‑digit representation
+                        consisting of the Umi‑Time
+                        <em>umi</em> field followed immediately by the Umi‑Time
+                        <em>umi‑second</em> field. No separators or additional
+                        symbols appear between the fields, and the two fields
+                        are presented as a single contiguous numeric value,
+                        optionally followed by a fraction.
+                      </p>
+
+                      <p>
+                        Because this six‑digit structure is syntactically
+                        identical to the ISO&nbsp;8601 basic UTC time format
+                        \((hhmmss)\), standalone Umi‑Time values may require
+                        contextual information to avoid ambiguity. When a
+                        calendar date is present, the required
+                        <code>U</code> separator provides explicit
+                        disambiguation.
+                      </p>
+
+                      <p>
+                        <strong>Examples:</strong> <code>235198</code>,
+                        <code>235198.25</code>
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Zero‑padding rules</h4>
+
+                      <p>
+                        The umi and umi‑second fields in the basic and extended
+                        Umi‑Time formats shall use fixed‑width, zero‑padded
+                        decimal integers. The <em>umi</em> field and the
+                        <em>umi‑second</em>
+                        field shall each contain exactly three digits, and
+                        values below \(100\) shall be left‑padded with zeros.
+                        Zero‑padding is mandatory and ensures that Umi‑Time
+                        values remain machine‑readable and compatible with
+                        fixed‑width parsing conventions. Zero‑padding does not
+                        apply to the fraction, which may have any number of
+                        digits.
+                      </p>
+
+                      <p>
+                        Zero‑padding requirements apply equally to both the
+                        basic six‑digit representation and the extended
+                        representation that uses a colon separator.
+                      </p>
+
+                      <p>
+                        <strong>Examples:</strong> <code>007003</code>,
+                        <code>042:058</code>, <code>359239</code>,
+                        <code>042:058.5</code>
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Fraction</h4>
+
+                      <p>
+                        The umi‑second field may be followed by a fraction
+                        consisting of a single full stop (<code>.</code>) and
+                        one or more decimal digits. The full stop is the only
+                        permitted decimal mark; the comma permitted by
+                        ISO&nbsp;8601 shall not be used. A full stop without at
+                        least one following digit is invalid. The fraction
+                        applies to both the basic and the extended format and
+                        shall appear immediately after the third digit of the
+                        umi‑second field.
+                      </p>
+
+                      <p>
+                        There is no upper limit on the number of fractional
+                        digits. A generating implementation should emit only as
+                        many digits as its time source resolves; a parsing
+                        implementation shall accept at least nine fractional
+                        digits and should preserve all digits presented.
+                        Trailing zeros carry no meaning beyond indicating
+                        precision.
+                      </p>
+
+                      <p>
+                        <strong>Examples:</strong> <code>235:038.25</code>,
+                        <code>235038.250</code>, <code>359:239.999</code>
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Comparison with UTC time formats</h4>
+
+                      <p>
+                        The basic Umi‑Time format and the ISO&nbsp;8601 basic
+                        UTC time format are both six‑digit numeric
+                        representations without separators. Although the two
+                        formats differ semantically—Umi‑Time expresses
+                        <em>umi</em> and <em>umi‑seconds</em>, while UTC
+                        expresses hours, minutes, and seconds—their syntactic
+                        similarity means that a standalone six‑digit Umi‑Time
+                        value may be indistinguishable from a six‑digit UTC time
+                        value.
+                      </p>
+
+                      <p>
+                        Because of this ambiguity, implementations shall rely on
+                        explicit disambiguation when both formats may appear in
+                        the same context. The extended Umi‑Time format
+                        (<code>uuu:sss</code>) and the mandatory
+                        <code>U</code> separator in combined date–Umi‑Time
+                        representations provide clear syntactic markers that
+                        distinguish Umi‑Time from UTC time.
+                      </p>
+
+                      <p>
+                        <strong>Examples:</strong>
+                        <code>235198</code> (ambiguous),
+                        <code>235:198</code> (unambiguous Umi‑Time),
+                        <code>2026-08-24U235:198</code> (unambiguous
+                        date–Umi‑Time).
+                      </p>
+                    </li>
+                  </ol>
+                </li>
+
+                <li>
+                  <h3>Extended Umi‑Time format</h3>
+
+                  <p>
+                    The extended Umi‑Time format provides a more readable
+                    presentation of Umi‑Time for user‑facing contexts, offering
+                    a clearer visual separation between the umi value and its
+                    fractional subdivision. It is intended for interfaces,
+                    documentation, and any situation where human clarity is
+                    preferred over compactness, while retaining the same
+                    underlying numeric fields defined for the basic format.
+                  </p>
+
+                  <ol>
+                    <li>
+                      <h4>Separator rules</h4>
+
+                      <p>
+                        In the extended Umi‑Time format, the umi and umi‑second
+                        fields shall be separated by exactly one colon. The
+                        colon is the only permitted field separator in
+                        conforming extended‑format data. It shall appear
+                        immediately after the umi field and shall not be
+                        repeated, omitted, or replaced by any other character.
+                        No whitespace or additional punctuation may appear
+                        around the separator. The optional fraction, when
+                        present, follows the umi‑second field as defined for the
+                        basic format.
+                      </p>
+                    </li>
+                    <li>
+                      <h4>Symbol variant (informative)</h4>
+
+                      <p>
+                        For illustrative or decorative purposes, user interfaces
+                        and diagrams may display a compact Umi symbol in place
+                        of the colon. This symbol variant is non‑normative and
+                        shall not be interpreted as a valid extended Umi‑Time
+                        representation.
+                      </p>
+                      <p>
+                        <!-- Inline Umi glyph definition -->
+                        <svg
+                          aria-hidden="true"
+                          class="umi-symbol large"
+                          viewBox="0 0 200 160"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M 153.7 67.4 A 76 76 0 1 1 46.3 67.4"
+                            stroke="currentColor"
+                            stroke-width="36"
+                            fill="none"
+                            stroke-linecap="butt"
+                          />
+                        </svg>
+                      </p>
+                      <p>
+                        <strong>Example using Umi glyph:</strong>
+                        <code>
+                          247<span
+                            ><svg
+                              aria-hidden="true"
+                              class="umi-symbol"
+                              viewBox="0 0 200 160"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M 153.7 67.4 A 76 76 0 1 1 46.3 67.4"
+                                stroke="currentColor"
+                                stroke-width="36"
+                                fill="none"
+                                stroke-linecap="butt"
+                              /></svg></span
+                          >198
+                        </code>
+                      </p>
+
+                      <p>
+                        When the custom glyph is unavailable, a superscript “u”
+                        may be used as a fallback. These presentations do not
+                        alter the underlying numeric fields or their
+                        interpretation.
+                      </p>
+
+                      <p>
+                        <strong>Example using superscript fallback:</strong>
+                        <code>247<sup>u</sup>197</code>
+                      </p>
+                    </li>
+                  </ol>
+                </li>
+
+                <li>
+                  <h3>Local context suffixes</h3>
+
+                  <p>
+                    A Umi‑Time value may be followed by a local context suffix
+                    to indicate the observer’s position within the Umi-Day at
+                    the moment represented by that Umi‑Time value. These
+                    suffixes provide the textual equivalent of the visual solar
+                    ring, conveying whether the value corresponds to morning,
+                    afternoon, evening, or night for the observer.
+                  </p>
+
+                  <p>
+                    Local context suffixes do not modify the underlying Umi‑Time
+                    value. Instead, they supply the local interpretation that
+                    cannot be inferred from the global Umi‑Time value alone. The
+                    subsections that follow define the permitted suffix forms
+                    and the rules governing their attachment to Umi‑Time values.
+                  </p>
+
+                  <ol>
+                    <li>
+                      <h4>General syntax</h4>
+
+                      <p>
+                        A local context suffix is an optional textual element
+                        appended directly to a Umi‑Time value to indicate the
+                        observer’s position within the
+                        <a href="#umi-day">Umi‑Day</a>. A suffix shall appear
+                        immediately after the final digit of the Umi‑Time value,
+                        with no intervening whitespace or punctuation.
+                      </p>
+
+                      <p>
+                        A suffix system shall define a finite set of suffixes,
+                        each corresponding to a distinct partition of the
+                        <a href="#umi-day">Umi‑Day</a>. The suffixes in a system
+                        shall be unambiguous, deterministic, and representable
+                        in plain text. A suffix system shall not modify the
+                        underlying Umi‑Time value and shall not conflict with
+                        the syntax of the Umi‑Time fields defined elsewhere in
+                        this specification.
+                      </p>
+
+                      <p>
+                        A suffix system shall define a syntactically
+                        distinguishable pattern that allows a conforming
+                        implementation to identify the suffix system in use
+                        without out‑of‑band information.
+                      </p>
+
+                      <p>
+                        Longitude suffixes, day‑phase suffixes, and segment
+                        suffixes are mutually exclusive. Only one suffix system
+                        may be applied to a Umi‑Time value. The Umi‑offset
+                        refinement is not a suffix system; it is an optional
+                        extension that may be applied only to compatible suffix
+                        systems as defined in their respective sections.
+                      </p>
+
+                      <p>
+                        Only the suffix systems defined in the following
+                        subsections are valid. Implementations shall reject any
+                        other suffix.
+                      </p>
+                    </li>
+                    <li>
+                      <h4 id="longitude-offset-suffix">
+                        Longitude offset suffix
+                      </h4>
+
+                      <p>
+                        The longitude offset suffix identifies the observer’s
+                        geographic longitude relative to the prime meridian.
+                        This suffix provides the textual equivalent of the
+                        dial’s longitude-based rotational offset and allows the
+                        reader to infer the observer’s approximate position
+                        within the solar day.
+                      </p>
+
+                      <p>
+                        The longitude offset suffix is syntactically
+                        distinguished by a leading plus or minus sign (<code
+                          >+</code
+                        >
+                        or <code>-</code>) followed by a three-digit,
+                        zero-padded integer in the range 000–180. Positive
+                        values represent degrees east of the prime meridian;
+                        negative values represent degrees west. The observer’s
+                        longitude shall be rounded to the nearest integer
+                        degree. The forms <code>+000</code> and
+                        <code>+180</code> shall be used in preference to
+                        <code>-000</code> and <code>-180</code>.
+                      </p>
+
+                      <p>
+                        The suffix does not modify the underlying Umi‑Time value
+                        and shall not be used as a substitute for the
+                        computational longitude parameter defined elsewhere in
+                        this specification.
+                      </p>
+
+                      <p>Example (informative): <code>235:198+123</code></p>
+                    </li>
+                    <li>
+                      <h4>Day‑phase suffix (P‑suffix)</h4>
+
+                      <p>
+                        The day‑phase suffix is an optional local‑context
+                        indicator that divides the observer’s Umi‑Time day into
+                        twenty‑four equal phases. Each phase represents one
+                        twenty‑fourth of the Umi‑Time cycle at the observer’s
+                        longitude, measured from Umi‑Time midnight. The P‑suffix
+                        provides a compact indication of the observer’s current
+                        position within the Umi‑Time day and shall not modify
+                        the interpretation of the umi or umi‑second fields.
+                      </p>
+
+                      <p>
+                        A day‑phase suffix shall begin with the uppercase letter
+                        <code>P</code> followed by an integer in the inclusive
+                        range <code>0</code>–<code>23</code>. Phase
+                        <code>P0</code> corresponds to the interval beginning at
+                        Umi‑Time midnight, phase <code>P12</code> corresponds to
+                        the interval beginning at
+                        <a href="#umi-time-noon">Umi‑Time noon</a>, and phase
+                        <code>P23</code>
+                        corresponds to the final interval ending at the next
+                        <a href="#umi-time-midnight">Umi‑Time midnight</a>.
+                        These phases are fixed geometric divisions of the
+                        Umi‑Time dial and do not depend on
+                        <a href="#physical-solar-noon">physical solar noon</a>
+                        or
+                        <a href="#physical-solar-midnight"
+                          >physical solar midnight</a
+                        >.
+                      </p>
+
+                      <p>
+                        A conforming implementation shall compute the day phase
+                        by determining the elapsed fraction of the
+                        <a href="#umi-day">Umi‑Day</a> at the observer’s
+                        longitude and multiplying that fraction by twenty‑four.
+                        The resulting value shall be truncated toward zero to
+                        obtain an integer in the required range. Because
+                        <a href="#umi-time-noon">Umi‑Time noon</a> and
+                        <a href="#umi-time-midnight">Umi‑Time midnight</a>
+                        generally occur within minutes of their physical solar
+                        counterparts, this geometric division provides a
+                        practical approximation of the
+                        <a href="#physical-solar-day">physical solar day</a>
+                        while remaining simple to compute and consistent with
+                        the Umi‑Time dial.
+                      </p>
+
+                      <p>
+                        The P‑suffix is a distinct suffix system and shall not
+                        be combined with any other suffix type. When present,
+                        the P‑suffix shall appear immediately after the Umi‑Time
+                        value with no intervening whitespace. A conforming
+                        implementation shall not alter the underlying Umi‑Time
+                        fields when parsing or validating a value that carries a
+                        P‑suffix.
+                      </p>
+
+                      <p>Examples (informative):</p>
+                      <pre><code>
+235198P0      (Umi‑Time midnight phase)
+042057P6      (morning phase)
+183144P12     (Umi‑Time noon phase)
+183144P23     (final phase before next Umi‑Time midnight)
+  </code></pre>
+
+                      <p>
+                        <strong>Display variant (informative):</strong> for
+                        human‑facing displays such as digital clock faces, user
+                        interfaces may present the day phase using the Greek
+                        capital phi (<code>Φ</code>, U+03A6) in place of the
+                        letter <code>P</code>, and may separate it from the umi
+                        value with a space — for example <code>105ᵘ Φ9</code>.
+                        Like the Umi glyph variant of the extended format, this
+                        presentation is non‑normative and shall not be
+                        interpreted as a valid textual representation;
+                        conforming interchange shall use <code>P</code>.
+                        Implementers should note that this specification uses
+                        lowercase \(\phi\) for latitude in the solar‑geometry
+                        formulas; the display glyph is unrelated to that
+                        quantity.
+                      </p>
+                    </li>
+
+                    <li>
+                      <h4 id="segment-code-suffix">Segment code suffix</h4>
+
+                      <p>
+                        The segment code suffix identifies the observer’s
+                        position within the <a href="#umi-day">Umi‑Day</a> by
+                        dividing the day into a fixed number of contiguous
+                        segments beginning at
+                        <a href="#umi-time-midnight">Umi‑Time midnight</a>. Each
+                        segment represents an equal portion of the
+                        <a href="#umi-day">Umi‑Day</a>, and the suffix indicates
+                        which segment contains the observer’s current Umi‑Time
+                        value.
+                      </p>
+
+                      <p>
+                        The segment code suffix is syntactically distinguished
+                        by the letter
+                        <code>S</code> followed by two integers separated by a
+                        slash. The first integer is the zero‑based segment
+                        index, and the second integer is the total number of
+                        segments in the system. The segment count shall be
+                        positive; the segment index shall be non‑negative and
+                        less than the segment count. Neither integer shall carry
+                        leading zeros.
+                      </p>
+
+                      <p>
+                        A segment code system may define any finite number of
+                        segments. The choice of segmentation granularity affects
+                        only the resolution of the local context information and
+                        does not modify the underlying Umi‑Time value. The
+                        suffix shall not be used as a substitute for solar
+                        position calculations defined elsewhere in this
+                        specification.
+                      </p>
+
+                      <p>Example (informative): <code>235:198S3/8</code></p>
+                    </li>
+                    <li>
+                      <h4 id="optional-umi-offset-refinement">
+                        Optional umi‑offset refinement
+                      </h4>
+
+                      <p>
+                        The umi‑offset refinement is an optional textual
+                        extension that may be applied to certain local context
+                        suffix systems to provide additional precision within
+                        the
+                        <a href="#umi-day">Umi‑Day</a>. It is intended for
+                        suffix systems whose primary divisions are coarse or
+                        symbolic, such as segment suffixes or day‑phase
+                        suffixes. The refinement is not applicable to longitude
+                        offset suffixes, which already provide precise
+                        positional information.
+                      </p>
+
+                      <p>
+                        The refinement specifies an offset, measured in
+                        <a href="#umi-time-umi">umi</a>, from the beginning of
+                        the segment or phase indicated by the preceding suffix.
+                        This allows an implementation or reader to express a
+                        more precise position within the
+                        <a href="#umi-day">Umi‑Day</a> without increasing the
+                        granularity of the underlying suffix system.
+                      </p>
+
+                      <p>
+                        The umi‑offset refinement is syntactically distinguished
+                        by a leading plus sign (<code>+</code>) followed by a
+                        non‑negative integer without leading zeros. The value
+                        shall be less than the width of one segment or phase in
+                        umi: less than \(360/n\) for an \(n\)‑segment system,
+                        and less than 15 for the day‑phase suffix. The
+                        refinement shall appear immediately after a compatible
+                        local context suffix. A refinement shall not appear
+                        without a preceding suffix, as its syntax would
+                        otherwise be ambiguous with the longitude offset suffix
+                        system.
+                      </p>
+
+                      <p>
+                        The refinement does not modify the underlying Umi‑Time
+                        value and shall not be used as a substitute for solar
+                        position calculations defined elsewhere in this
+                        specification. A conforming implementation shall not
+                        alter the underlying Umi‑Time fields when parsing or
+                        validating a value that carries a refinement.
+                      </p>
+
+                      <p>
+                        Example (informative):
+                        <code>235:198S3/8+12</code> indicates that the
+                        observer’s position within the Umi‑Day is 12&nbsp;umi
+                        past the start of segment&nbsp;3 in an eight‑segment
+                        system.
+                      </p>
+                    </li>
+                  </ol>
+                </li>
+
+                <li>
+                  <h3>Date–Umi‑Time combination</h3>
+
+                  <p>
+                    A calendar date may be combined with a Umi‑Time value when
+                    both a date and a Umi‑Time reading must be recorded
+                    together. This combined form is useful in contexts such as
+                    logging, data interchange, archival records, and any
+                    application where events are associated with both a calendar
+                    date and a precise timestamp.
+                  </p>
+
+                  <ol>
+                    <li>
+                      <h4>Use of the U‑separator</h4>
+
+                      <p>
+                        When a calendar date is combined with a Umi‑Time value,
+                        the two components shall be separated by the literal
+                        character
+                        <code>U</code>. The separator shall appear immediately
+                        after the final digit of the calendar date, with no
+                        intervening whitespace or punctuation.
+                      </p>
+
+                      <p>
+                        The <code>U</code> separator ensures that a combined
+                        date–Umi‑Time expression cannot be misinterpreted as an
+                        ISO&nbsp;8601 UTC date–time, which uses the
+                        <code>T</code> separator. Its use provides a clear and
+                        unambiguous distinction between the two representations
+                        in contexts where both may appear.
+                      </p>
+
+                      <p>
+                        The same separator may also be used to introduce a
+                        standalone Umi‑Time value when disambiguation is
+                        required.
+                      </p>
+
+                      <p>Examples:</p>
+                      <ul>
+                        <li><code>2026-08-24U235:198</code></li>
+                        <li><code>U235198</code></li>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <h4>Calendar date formats</h4>
+
+                      <p>
+                        The calendar date used in a combined date–Umi‑Time
+                        representation shall conform to ISO&nbsp;8601, in either
+                        basic form (<code>YYYYMMDD</code>) or extended form
+                        (<code>YYYY-MM-DD</code>). This specification does not
+                        alter the semantics of ISO&nbsp;8601 calendar dates.
+                      </p>
+                    </li>
+
+                    <li id="date-interpretation">
+                      <h4>Date interpretation</h4>
+
+                      <p>
+                        The interpretation of the calendar date in a combined
+                        date–Umi‑Time representation depends on whether local
+                        context suffixes are present.
+                      </p>
+
+                      <p>
+                        When no local context suffixes are present, the calendar
+                        date shall be interpreted as the
+                        <strong>UTC calendar date</strong>.
+                      </p>
+
+                      <p>
+                        When local context suffixes are present, the calendar
+                        date shall be interpreted as the
+                        <strong>Umi‑Date</strong>, defined as the UTC calendar
+                        date in effect at <strong>Umi-Time noon</strong> for the
+                        observer’s longitude.
+                      </p>
+
+                      <p>
+                        When a longitude offset suffix is present, the Umi‑Day
+                        boundary used to assign the Umi‑Date shall be computed
+                        from the suffix value \(\lambda_s\) (an integer in
+                        degrees), not from the observer’s exact longitude. The
+                        UTC calendar date of the instant is then recovered as
+                        follows, where \(u\) is the umi field and \(D\) the
+                        Umi‑Date:
+                      </p>
+                      <ul>
+                        <li>
+                          if \(\lambda_s > 0\) and \(u \geq 360 - \lambda_s\):
+                          UTC date is \(D - 1\);
+                        </li>
+                        <li>
+                          if \(\lambda_s < 0\) and \(u < -\lambda_s\): UTC date
+                          is \(D + 1\);
+                        </li>
+                        <li>otherwise: UTC date is \(D\).</li>
+                      </ul>
+
+                      <p>
+                        Ordering and comparison of combined representations
+                        shall be performed on the UTC instant. A representation
+                        without a suffix, or with a longitude offset suffix,
+                        determines the UTC instant uniquely. Day‑phase and
+                        segment suffixes determine the UTC instant only to
+                        within the resolution of the phase or segment, and the
+                        UTC date may be ambiguous when the value lies near a UTC
+                        day boundary; such representations should not be used
+                        where ordering across observers is required.
+                      </p>
+                    </li>
+
+                    <li>
+                      <h4>Combined representations</h4>
+
+                      <p>
+                        A combined date–Umi‑Time representation consists of a
+                        valid ISO&nbsp;8601 calendar date followed by the
+                        separator defined above and a Umi‑Time value in either
+                        basic or extended format. Together, these components
+                        form a single textual value that records both the
+                        calendar date and the corresponding Umi‑Time reading.
+                      </p>
+
+                      <p>
+                        The two components are interpreted independently, except
+                        for the date interpretation rule described in the
+                        preceding subsection.
+                      </p>
+
+                      <p>Examples:</p>
+                      <pre><code>
+Basic date + Umi‑Time:    20260824U235198
+Extended date + Umi‑Time: 2026-08-24U235:198
+      </code></pre>
+                    </li>
+                  </ol>
+                </li>
+
+                <li>
+                  <h3>Parsing and validation rules</h3>
+
+                  <p>
+                    A conforming implementation shall parse Umi‑Time values
+                    strictly according to the formats defined in this
+                    specification. Parsing shall not rely on heuristics,
+                    inference, or contextual guessing. Any deviation from the
+                    required structure, field widths, numeric ranges, or suffix
+                    syntax shall cause the entire value to be rejected as
+                    invalid.
+                  </p>
+
+                  <ol>
+                    <li>
+                      <h4>Core field validation</h4>
+
+                      <p>
+                        The Umi‑Time umi field shall consist of exactly three
+                        decimal digits in the range
+                        <code>000</code>–<code>359</code>. The Umi‑Time second
+                        field shall consist of exactly three decimal digits in
+                        the range <code>000</code>–<code>239</code>, optionally
+                        followed by a fraction consisting of a full stop and one
+                        or more decimal digits. Both integer fields shall be
+                        zero‑padded to fixed width. Implementations shall reject
+                        values that contain non‑digit characters outside the
+                        permitted separators, incorrect field widths,
+                        out‑of‑range values, a full stop not followed by a
+                        digit, or more than one full stop.
+                      </p>
+
+                      <p>
+                        In the extended format, the umi and umi‑second fields
+                        shall be separated by a single colon (<code>:</code>).
+                        The colon shall appear exactly once and only in this
+                        position. No other separators are permitted within the
+                        Umi‑Time value.
+                      </p>
+                    </li>
+
+                    <li>
+                      <h4>Combined date and Umi‑Time</h4>
+
+                      <p>
+                        When a date is combined with a Umi‑Time value, the date
+                        shall conform to the formats defined in
+                        <a href="#date-umi-time-combination"
+                          >Date and Umi‑Time combination</a
+                        >. The date and Umi‑Time components shall be separated
+                        by a single uppercase letter <code>U</code>.
+                        Implementations shall reject combined representations
+                        that omit the separator, use a lowercase variant, or
+                        contain additional separators or whitespace.
+                      </p>
+                    </li>
+
+                    <li>
+                      <h4>Suffix parsing</h4>
+
+                      <p>
+                        Local context suffixes shall be parsed only if present
+                        and shall conform exactly to the syntax defined in
+                        <a href="#local-context-suffixes"
+                          >Local context suffixes</a
+                        >. A suffix shall appear immediately after the Umi‑Time
+                        value with no intervening whitespace. Suffix systems are
+                        mutually exclusive. The Umi‑offset refinement may only
+                        be applied to a compatible suffix system as defined in
+                        its section. Implementations shall reject values
+                        containing malformed suffixes, incorrect ordering, or
+                        ambiguous patterns.
+                      </p>
+
+                      <p>
+                        The presence of any suffix shall not modify the
+                        underlying Umi‑Time fields. Ordering and comparison of
+                        combined representations shall follow
+                        <a href="#date-interpretation">Date interpretation</a>.
+                      </p>
+                    </li>
+
+                    <li>
+                      <h4>Whitespace and invalid characters</h4>
+
+                      <p>
+                        No internal whitespace is permitted within a Umi‑Time
+                        value, its suffixes, or any combined representation.
+                        Leading or trailing whitespace may be removed by the
+                        implementation but shall not appear within the value
+                        itself. Any character outside the permitted digits, the
+                        hyphen of an extended calendar date, colon, full stop of
+                        a fraction,
+                        <code>U</code>
+                        separator, or suffix syntax defined in
+                        <a href="#local-context-suffixes"
+                          >Local context suffixes</a
+                        >
+                        shall cause the value to be rejected.
+                      </p>
+                    </li>
+
+                    <li>
+                      <h4>Error handling</h4>
+
+                      <p>
+                        A conforming implementation shall treat any malformed,
+                        partially conforming, or ambiguous representation as
+                        invalid. Implementations shall not attempt to infer
+                        missing fields, reinterpret ambiguous numeric sequences,
+                        or recover from structural errors. Only fully conforming
+                        Umi‑Time values shall be accepted.
+                      </p>
+                    </li>
+                  </ol>
+                </li>
+
+                <li>
+                  <h3>Formal grammar (informative)</h3>
+
+                  <p>
+                    The following grammar, in the notation of
+                    ISO/IEC&nbsp;14977, summarises the textual formats defined
+                    in this section. The prose requirements are normative; where
+                    the grammar and the prose differ, the prose prevails.
+                    Hyphens are used within meta‑identifiers for readability.
+                    Range constraints that the grammar cannot express (a valid
+                    calendar date, segment index less than segment count,
+                    refinement less than the segment or phase width) are
+                    semantic constraints defined in the corresponding
+                    subsections.
+                  </p>
+
+                  <pre><code>digit             = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+non-zero-digit    = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+integer           = "0" | non-zero-digit, { digit } ;
+
+umi-field         = ( "0" | "1" | "2" ), digit, digit
+                  | "3", ( "0" | "1" | "2" | "3" | "4" | "5" ), digit ;
+second-field      = ( "0" | "1" ), digit, digit
+                  | "2", ( "0" | "1" | "2" | "3" ), digit ;
+fraction          = ".", digit, { digit } ;
+
+basic-umi-time    = umi-field, second-field, [ fraction ] ;
+extended-umi-time = umi-field, ":", second-field, [ fraction ] ;
+umi-time          = basic-umi-time | extended-umi-time ;
+
+longitude-value   = "0", digit, digit
+                  | "1", ( "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" ), digit
+                  | "180" ;
+longitude-suffix  = ( "+" | "-" ), longitude-value ;
+
+refinement        = "+", integer ;
+phase-index       = digit | "1", digit | "2", ( "0" | "1" | "2" | "3" ) ;
+phase-suffix      = "P", phase-index, [ refinement ] ;
+segment-suffix    = "S", integer, "/", integer, [ refinement ] ;
+
+suffix            = longitude-suffix | phase-suffix | segment-suffix ;
+local-umi-time    = umi-time, [ suffix ] ;
+
+basic-date        = 8 * digit ;
+extended-date     = 4 * digit, "-", 2 * digit, "-", 2 * digit ;
+calendar-date     = basic-date | extended-date ;
+
+standalone        = [ "U" ], local-umi-time ;
+combined          = calendar-date, "U", local-umi-time ;
+umi-representation = standalone | combined ;</code></pre>
+                </li>
+
+                <li>
+                  <h3>Examples</h3>
+
+                  <p>
+                    The following examples illustrate valid Umi‑Time
+                    representations and the use of optional local context
+                    suffixes. All examples are informative only and do not
+                    introduce additional normative requirements.
+                  </p>
+
+                  <ol>
+                    <li>
+                      <h4>Basic Umi‑Time</h4>
+
+                      <p>
+                        The basic format consists of six digits: three for the
+                        umi field and three for the umi‑second field.
+                      </p>
+
+                      <p>Example: <code>235198</code></p>
+                    </li>
+
+                    <li>
+                      <h4>Extended Umi‑Time</h4>
+
+                      <p>
+                        The extended format separates the umi and umi‑second
+                        fields with a colon.
+                      </p>
+
+                      <p>Example: <code>235:198</code></p>
+                    </li>
+
+                    <li>
+                      <h4>Fractional umi‑seconds</h4>
+
+                      <p>
+                        A fraction may follow the umi‑second field in either
+                        format, and may be combined with a date or suffix.
+                      </p>
+
+                      <p>
+                        Examples: <code>235:038.25</code>,
+                        <code>2026-08-24U235038.250</code>,
+                        <code>235:038.25+012</code>
+                      </p>
+                    </li>
+
+                    <li>
+                      <h4>Combined date and Umi‑Time</h4>
+
+                      <p>
+                        A date may be combined with a Umi‑Time value using the
+                        <code>U</code> separator, as defined in
+                        <a href="#date-umi-time-combination"
+                          >Date and Umi‑Time combination</a
+                        >.
+                      </p>
+
+                      <p>Example: <code>2026-09-23U235:198</code></p>
+                    </li>
+
+                    <li>
+                      <h4>Longitude offset suffix</h4>
+
+                      <p>
+                        A longitude offset suffix indicates the observer’s
+                        longitudinal displacement from the reference meridian,
+                        as defined in
+                        <a href="#longitude-offset-suffix"
+                          >Longitude offset suffix</a
+                        >.
+                      </p>
+
+                      <p>
+                        Example: <code>235:198+012</code>
+                        (observer is 12° east of the reference meridian)
+                      </p>
+                    </li>
+
+                    <li>
+                      <h4>Segment code suffix</h4>
+
+                      <p>
+                        A segment code suffix identifies the segment of the
+                        solar day containing the observer’s current Umi‑Time
+                        value, as defined in
+                        <a href="#segment-code-suffix">Segment code suffix</a>.
+                      </p>
+
+                      <p>
+                        Example: <code>235:198S3/8</code> (segment index 3 of 8;
+                        the <em>fourth</em> segment, zero‑based indexing)
+                      </p>
+                    </li>
+
+                    <li>
+                      <h4>Segment code with umi‑offset refinement</h4>
+
+                      <p>
+                        An umi‑offset refinement provides additional precision
+                        within a segment or other coarse division, as defined in
+                        <a href="#optional-umi-offset-refinement"
+                          >Optional umi‑offset refinement</a
+                        >.
+                      </p>
+
+                      <p>
+                        Example: <code>235:198S3/8+12</code>
+                        (12 umi past the start of segment index 3 of 8)
+                      </p>
+                    </li>
+                  </ol>
+                </li>
+              </ol>
+            </li>
+
+            <li>
+              <h2>Conformance</h2>
+
+              <p>
+                A conforming implementation shall correctly interpret, validate,
+                and generate Umi‑Time values according to the normative
+                requirements defined in this specification. The required
+                behavior includes correct handling of the fixed‑width umi and
+                umi‑second fields, adherence to the permitted textual formats,
+                and strict application of the parsing and validation rules
+                defined in
+                <a href="#parsing-and-validation-rules"
+                  >Parsing and validation rules</a
+                >.
+              </p>
+
+              <p>
+                Implementations that provide a visual representation of
+                Umi‑Time, including dials, maps, or other longitude‑aligned
+                displays, shall ensure that the positions of solar events (such
+                as
+                <a href="#sunrise-sunset">sunrise</a>,
+                <a href="#physical-solar-noon">physical solar noon</a>,
+                <a href="#sunrise-sunset">sunset</a>, and other defined
+                reference points) are consistent with the Umi‑Time model and the
+                geometric relationships described in this specification. Visual
+                elements shall not contradict the underlying Umi‑Time value or
+                its interpretation.
+              </p>
+
+              <p>
+                Implementations shall not reinterpret umi values as solar time.
+                Solar geometry is applied only to the solar ring and shall not
+                modify the underlying umi progression, the canonical placement
+                of
+                <span class="umi">0ᵘ</span>, or the longitude‑based dial
+                orientation. Likewise, solar events shall not be used to
+                redefine or adjust any umi value.
+              </p>
+
+              <p>
+                Optional features, such as local context suffixes, shall be
+                supported when present and shall conform exactly to the syntax
+                and semantics defined in
+                <a href="#local-context-suffixes">Local context suffixes</a>.
+                The presence or absence of any suffix shall not alter the
+                underlying Umi‑Time value.
+              </p>
+
+              <p>
+                Informative text, examples, and explanatory notes do not impose
+                additional conformance requirements. Only the normative
+                statements in this specification define the criteria for
+                conformance.
+              </p>
+
+              <ol>
+                <li>
+                  <h3>Conformance classes</h3>
+
+                  <p>
+                    An implementation may claim conformance to one or more of
+                    the following classes. A claim shall identify the class or
+                    classes to which it applies.
+                  </p>
+
+                  <ul>
+                    <li>
+                      <strong>Textual</strong> — parses and/or generates
+                      Umi‑Time values according to
+                      <a href="#textual-representation-of-umi-time"
+                        >Textual representation of Umi‑Time</a
+                      >, including the parsing and validation rules and date
+                      interpretation. A textual implementation need not compute
+                      solar geometry.
+                    </li>
+                    <li>
+                      <strong>Dial</strong> — computes the umi value from UTC
+                      and presents it on a dial rotated by longitude as defined
+                      in
+                      <a href="#computing-umi-time-umi"
+                        >Computing Umi‑Time Umi</a
+                      >
+                      and <a href="#dial-orientation">Dial Orientation</a>. A
+                      dial implementation need not render a solar ring.
+                    </li>
+                    <li>
+                      <strong>Solar ring</strong> — additionally computes and
+                      renders solar events on the fixed solar ring as defined in
+                      <a href="#solar-event-computation-formulas"
+                        >Solar Event Computation Formulas</a
+                      >, meeting the
+                      <a href="#accuracy-requirements">Accuracy Requirements</a
+                      >. Solar ring conformance implies dial conformance.
+                    </li>
+                  </ul>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <h2>Licensing</h2>
+
+              <p>
+                This specification is published under the MIT License. The
+                license applies to the text of the specification itself and does
+                not impose any licensing requirements on software, hardware, or
+                documentation that implements Umi‑Time.
+              </p>
+
+              <p>
+                Implementations may use
+                <strong>any license</strong>—open‑source or proprietary—provided
+                they accurately implement the normative requirements of Umi‑Time
+                and do not present Umi‑Time as a different or incompatible time
+                system. The MIT License governing this specification does not
+                extend to, or restrict, independent implementations.
+              </p>
+
+              <p>
+                Derivative works, extensions, and alternative presentations of
+                the specification are permitted under the terms of the MIT
+                License, so long as references to Umi‑Time remain truthful and
+                consistent with the standard defined here.
+              </p>
+            </li>
+            <li>
+              <h2>Summary</h2>
+
+              <p>
+                Umi‑Time is an open standard planetary time system that presents
+                UTC as a universal, location‑independent timestamp for global
+                coordination. It expresses the day as a continuous 0ᵘ–360ᵘ cycle
+                mapped exactly from UTC, ensuring that umi values advance at a
+                constant rate everywhere on Earth and that every moment has a
+                single shared value. This gives humanity a common daily
+                reference that remains stable across all longitudes.
+              </p>
+
+              <p>
+                While the umi progression is universal, the orientation of the
+                Umi‑Time dial is local and determined solely by the observer’s
+                longitude. This rotational offset roughly aligns
+                <a href="#umi-time-noon">Umi‑Time noon</a> and
+                <a href="#umi-time-midnight">Umi‑Time midnight</a> with the
+                local sky without altering the underlying umi value. Solar
+                geometry—<a href="#sunrise-sunset">sunrise</a>,
+                <a href="#sunrise-sunset">sunset</a>, twilight phases, and
+                <a href="#physical-solar-noon">physical solar noon</a>—is
+                computed separately and drawn on the fixed solar ring, providing
+                intuitive daylight context without affecting the global time
+                scale.
+              </p>
+
+              <p>
+                This separation of concerns makes Umi‑Time both globally uniform
+                and locally meaningful: a single planetary time value enriched
+                by the geometry of the day via the fixed solar ring. The
+                specification defines the umi and umi‑second fields, the
+                permitted textual formats, the optional local‑context suffixes,
+                and the rules for parsing, validation, and visual
+                representation, establishing a coherent foundation for software,
+                science, communication, and human coordination at planetary
+                scale.
+              </p>
+            </li>
+            <li>
+              <h2>Test Vectors (Informative)</h2>
+              <p>
+                The following values were computed with the formulas in
+                <a href="#solar-event-computation-formulas"
+                  >Solar Event Computation Formulas</a
+                >, including one re‑evaluation of \(\delta\) and EoT at the
+                estimated event time and \(h_0 = -0.833^\circ\). Umi values are
+                given to four decimal places; textual values are rounded to the
+                nearest umi‑second. Implementations should reproduce the textual
+                values to within ±1 umi‑second.
+              </p>
+
+              <ol>
+                <li>
+                  <h4>UTC to umi</h4>
+                  <pre><code>15:40:38 UTC      = 56438 s      →  UT = 235.1583ᵘ  →  235:038
+15:40:38.250 UTC  = 56438.25 s   →  UT = 235.1594ᵘ  →  235:038.25
+08:00:00 UTC      = 28800 s      →  UT = 120.0000ᵘ  →  120:000
+23:59:59.9 UTC    = 86399.9 s    →  UT = 359.9996ᵘ  →  359:239.9
+
+Round trip:  2026-08-24T15:40:38.250Z  ↔  2026-08-24U235:038.25</code></pre>
+                </li>
+
+                <li>
+                  <h4>
+                    Greenwich, 2026-06-21 (\(\phi = 51.4778\), \(\lambda =
+                    0.0\))
+                  </h4>
+                  <pre><code>UT_mid (Umi‑Time midnight)  =   0.0000ᵘ     θ_rotation = 0°
+EoT (at noon)              =  -1.8246 min   δ = 23.4381°
+UT_noon (physical)         = 180.4561ᵘ  → 180:109  (12:01:49 UTC)
+UT_solar mid (physical)    =   0.4561ᵘ  → 000:109
+H_0 (sunrise)              = 124.7520°
+UT_sunrise                 =  55.6853ᵘ  → 055:164  (03:42:44 UTC)   θ =  55.6853°
+UT_sunset                  = 305.2256ᵘ  → 305:054  (20:20:54 UTC)   θ = 305.2256°</code></pre>
+                </li>
+
+                <li>
+                  <h4>
+                    New York, 2026-03-20 (\(\phi = 40.7128\), \(\lambda =
+                    -74.0060\))
+                  </h4>
+                  <pre><code>UT_mid (Umi‑Time midnight)  =  74.0060ᵘ     θ_rotation = -74.006°
+EoT (at noon)              =  -7.3706 min   δ = 0.0400°
+UT_noon (physical)         = 255.8486ᵘ  → 255:204  (17:03:23 UTC)   θ = 181.8426°
+UT_sunrise                 = 164.8201ᵘ  → 164:197  (10:59:16 UTC)   θ =  90.8141°
+UT_sunset                  = 347.0494ᵘ  → 347:012  (23:08:11 UTC)   θ = 273.0434°</code></pre>
+                </li>
+
+                <li>
+                  <h4>
+                    Tokyo, 2026-12-21 (\(\phi = 35.6895\), \(\lambda =
+                    139.6917\))
+                  </h4>
+                  <pre><code>UT_mid (Umi‑Time midnight)  = 220.3083ᵘ     θ_rotation = 139.6917°
+EoT (at noon)              =   2.1158 min   δ = -23.4356°
+UT_noon (physical)         =  39.7793ᵘ  → 039:187  (02:39:07 UTC)   θ = 179.4710°
+UT_sunrise                 = 326.8491ᵘ  → 326:204  (21:47:23 UTC, 2026-12-20)   θ = 106.5408°
+UT_sunset                  = 112.8345ᵘ  → 112:200  (07:31:20 UTC)   θ = 252.5262°</code></pre>
+                  <p>
+                    Date interpretation: for this observer the sunrise instant
+                    is written <code>2026-12-21U326:204+140</code>. With
+                    \(\lambda_s = +140\) and \(u = 326 \geq 360 - 140\), the UTC
+                    date resolves to 2026-12-20, matching the UTC instant above.
+                    Without a suffix the same instant is written
+                    <code>2026-12-20U326:204</code>.
+                  </p>
+                </li>
+
+                <li>
+                  <h4>Tromsø (\(\phi = 69.6496\), \(\lambda = 18.9553\))</h4>
+                  <pre><code>UT_mid (Umi‑Time midnight)  = 341.0447ᵘ     θ_rotation = 18.9553°
+
+2026-06-21:  arccos° argument &lt; -1  →  Sun above h_0 all day (no sunrise/sunset)
+             UT_noon (physical) = 161.4980ᵘ  → 161:120  (10:45:59 UTC)
+
+2026-12-21:  arccos° argument &gt; +1  →  Sun below h_0 all day (no sunrise/sunset)
+             UT_noon (physical) = 160.5573ᵘ  → 160:134  (10:42:13 UTC)</code></pre>
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </main>
+      </div>
+    </div>
+
+    <script src="vendor/mathjax-full/es5/tex-mml-chtml.js"></script>
+    <script src="js/spec.js" defer></script>
+  </body>
+</html>

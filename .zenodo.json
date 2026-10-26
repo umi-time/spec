@@ -1,0 +1,34 @@
+{
+  "title": "Umi-Time Specification",
+  "upload_type": "publication",
+  "publication_type": "technicalnote",
+  "description": "The canonical, self-contained specification for the Umi-Time standard. Umi-Time gives us one shared number for the exact same instant globally, while presenting it in a way that is locally meaningful across visual, textual, and digital interfaces. This specification defines the 0ᵘ–360ᵘ umi unit system, its direct mapping from UTC, and the structural layers for local presentation under an observer’s sky.",
+  "creators": [
+    {
+      "name": "Brannon, Daniel",
+      "affiliation": "Umi-Time Project"
+    },
+    {
+      "name": "Umi-Time Contributors"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "Umi-Time",
+    "time-standard",
+    "UTC",
+    "global-coordination",
+    "local-presentation-mapping",
+    "technical-specification"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isPartOf",
+      "identifier": "https://umitime.com",
+      "scheme": "url",
+      "resource_type": "publication-section"
+    }
+  ],
+  "version": "1.0.0",
+  "language": "eng"
+}

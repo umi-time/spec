@@ -16,7 +16,7 @@ keywords:
   - global-coordination
   - local-presentation-mapping
   - solar-geometry
-license: MIT
+license: CC-BY-4.0
 repository-code: "https://github.com/umi-time/spec"
 url: "https://www.umitime.com/spec"
 version: "1.0.0"

@@ -12,7 +12,7 @@ This repository is intentionally minimal and includes only the canonical assets 
 
 ```text
 ├── spec.html                 # The canonical Umi‑Time specification (self-contained HTML)
-├── LICENSE                   # Repository license text (MIT)
+├── LICENSE                   # Repository license text (CC-BY-4.0)
 ├── CITATION.cff              # Repository citation metadata
 ├── .zenodo.json              # Zenodo archival configuration
 ├── css/
@@ -84,4 +84,5 @@ If you reference this specification in an academic paper, technical report, or s
 
 ## License
 
-MIT License © 2026 Daniel Brannon and Umi-Time Contributors
+CC-BY-4.0 License  
+© 2026 Daniel Brannon and Umi-Time Contributors

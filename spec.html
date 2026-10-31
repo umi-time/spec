@@ -32,7 +32,10 @@
             <dt>Date</dt>
             <dd>2026-11-01</dd>
             <dt>License</dt>
-            <dd>Creative Commons Attribution 4.0 International Public License (see <a href="#licensing">Licensing</a>)</dd>
+            <dd>
+              Creative Commons Attribution 4.0 International Public License (see
+              <a href="#licensing">Licensing</a>)
+            </dd>
           </dl>
           <hr />
           <ol class="spec-sections">
@@ -40,16 +43,14 @@
               <h2>Overview</h2>
 
               <p>
-                Umi‑Time is a UTC-based time system that represents the day as a
-                continuous
-                <span>\(0^\mathrm{u}\text{–}360^\mathrm{u}\)</span>
-                cycle. This uniform mapping ensures that umi values advance at a
-                constant rate everywhere on Earth, independent of the varying
-                length of the
+                Umi‑Time is a UTC‑based standard that represents the UTC day as
+                a continuous 360‑umi cycle. This uniform mapping ensures that
+                umi values advance at a constant rate everywhere on Earth,
+                independent of the varying length of the
                 <a href="#physical-solar-day">physical solar day</a>. Umi‑Time
-                is a presentation of UTC, not a new time scale: every Umi‑Time
-                value corresponds to exactly one UTC time of day, and the
-                conversion in either direction is exact.
+                does not define a new time scale; it provides an alternative
+                representation of UTC in which every Umi‑Time value corresponds
+                exactly to one UTC time of day.
               </p>
 
               <p>
@@ -78,7 +79,7 @@
               </p>
 
               <ul>
-                <li>the Umi‑Time system</li>
+                <li>the Umi‑Time standard</li>
                 <li>the solar geometry inputs</li>
                 <li>the computational model</li>
                 <li>the dial orientation rules</li>
@@ -100,67 +101,27 @@
               <h2>Definitions</h2>
               <ol>
                 <li>
-                  <h3>Physical Solar Noon</h3>
-                  <p>
-                    The moment when the Sun reaches its highest altitude
-                    relative to the horizon at a given location. This moment may
-                    not coincide with
-                    <a href="#umi-time-noon">Umi‑Time noon</a> due to the
-                    equation of time.
-                  </p>
-                </li>
-                <li>
-                  <h3>Physical Solar Midnight</h3>
-                  <p>
-                    The moment when the Sun reaches its lowest altitude relative
-                    to the horizon at a given location. This moment may not
-                    coincide with
-                    <a href="#umi-time-midnight">Umi‑Time midnight</a> due to
-                    the equation of time.
-                  </p>
-                </li>
-                <li>
-                  <h3>Physical Solar Day</h3>
-                  <p>
-                    The interval between two successive
-                    <a href="#physical-solar-noon">physical solar noons</a> at a
-                    given longitude.<br />Its length varies slightly throughout
-                    the year due to orbital eccentricity and axial tilt.
-                  </p>
-                  <p>
-                    Umi‑Time does not adjust its
-                    <a href="#umi-time-umi">umi</a> progression based on the
-                    varying length of the
-                    <a href="#physical-solar-day">physical solar day</a>.
-                    However, the
-                    <a href="#physical-solar-day">physical solar‑day</a>
-                    variation affects
-                    <a href="#sunrise-sunset">sunrise and sunset</a> times
-                    slightly.
-                  </p>
-                </li>
-                <li>
-                  <h3>Sunrise / Sunset</h3>
-                  <p>
-                    The moments when the Sun’s upper limb crosses the horizon,
-                    corrected for atmospheric refraction.
-                  </p>
-                </li>
-                <li>
                   <h3>Umi‑Time Umi</h3>
                   <p>
-                    Umi is the basic unit of Umi‑Time, denoted by ᵘ. Umi are a
-                    continuous measure of daily progress mapped directly from
-                    UTC time.<br />They range from 0ᵘ to 360ᵘ, advancing
-                    uniformly over the 24‑hour UTC day reference.
+                    Umi is the basic unit of Umi‑Time, denoted by ᵘ. The UTC day
+                    is divided into 360 equal umi units, which advance uniformly
+                    over the 24‑hour UTC reference day.
                   </p>
+
                   <p>
-                    Umi‑Time umi are a rescaling of UTC. They do
-                    <strong>not</strong> measure Earth’s actual rotation and do
+                    The continuous Umi‑Time coordinate (UT) may assume
+                    fractional values. Integer umi values represent the
+                    whole‑umi component of UT and form the basis of standard
+                    Umi‑Time representations.
+                  </p>
+
+                  <p>
+                    Umi units are a rescaling of UTC. They do
+                    <strong>not</strong> measure Earth's actual rotation and do
                     <strong>not</strong> vary with the length of the
-                    <a href="#physical-solar-day">physical solar day</a
-                    >.<br />They provide a universal, constant measure of the
-                    day.
+                    <a href="#physical-solar-day">physical solar day</a>. They
+                    provide a universal, constant measure of progress through
+                    the UTC day.
                   </p>
                 </li>
                 <li>
@@ -171,6 +132,22 @@
                     Umi‑Time second (umi‑second) corresponds to exactly one SI
                     second. Umi‑seconds are numbered 000–239 within each umi and
                     may carry a decimal fraction.
+                  </p>
+                </li>
+                <li>
+                  <h3>UT</h3>
+
+                  <p>
+                    UT is the canonical continuous representation of Umi‑Time
+                    and the standard abbreviation used throughout this
+                    specification.
+                  </p>
+
+                  <p>
+                    UT may assume fractional values and retains the precision of
+                    the underlying UTC timestamp. Integer umi values and
+                    umi‑seconds are derived representations of this continuous
+                    coordinate.
                   </p>
                 </li>
                 <li>
@@ -220,20 +197,50 @@
                   </p>
                 </li>
                 <li>
-                  <h3>Longitude Anchor</h3>
+                  <h3>Physical Solar Noon</h3>
                   <p>
-                    Umi‑Time umi are universal, but the orientation of the
-                    Umi‑Time dial is local. An observer’s longitude determines
-                    how the dial is rotated so that
-                    <a href="#umi-time-noon">Umi‑Time noon</a> appears at the
-                    top of the solar ring and
-                    <a href="#umi-time-midnight">Umi‑Time Midnight</a> at the
-                    bottom.
+                    The moment when the Sun reaches its highest altitude
+                    relative to the horizon at a given location. This moment may
+                    not coincide with
+                    <a href="#umi-time-noon">Umi‑Time noon</a> due to the
+                    equation of time.
+                  </p>
+                </li>
+                <li>
+                  <h3>Physical Solar Midnight</h3>
+                  <p>
+                    The moment when the Sun reaches its lowest altitude relative
+                    to the horizon at a given location. This moment may not
+                    coincide with
+                    <a href="#umi-time-midnight">Umi‑Time midnight</a> due to
+                    the equation of time.
+                  </p>
+                </li>
+                <li>
+                  <h3>Physical Solar Day</h3>
+                  <p>
+                    The interval between two successive
+                    <a href="#physical-solar-noon">physical solar noons</a> at a
+                    given longitude.<br />Its length varies slightly throughout
+                    the year due to orbital eccentricity and axial tilt.
                   </p>
                   <p>
-                    Longitude does <strong>not</strong> change the umi value
-                    itself; it only sets the rotational offset that aligns the
-                    dial with the observer’s sky.
+                    Umi‑Time does not adjust its
+                    <a href="#umi-time-umi">umi</a> progression based on the
+                    varying length of the
+                    <a href="#physical-solar-day">physical solar day</a>.
+                    However, the
+                    <a href="#physical-solar-day">physical solar‑day</a>
+                    variation affects
+                    <a href="#sunrise-sunset">sunrise and sunset</a> times
+                    slightly.
+                  </p>
+                </li>
+                <li>
+                  <h3>Sunrise / Sunset</h3>
+                  <p>
+                    The moments when the Sun’s upper limb crosses the horizon,
+                    corrected for atmospheric refraction.
                   </p>
                 </li>
                 <li>
@@ -258,58 +265,162 @@
               </ol>
             </li>
             <li>
-              <h2>Core Concept</h2>
+              <h2>Core Concepts</h2>
 
               <p>
-                Umi‑Time represents the day as a full 360ᵘ cycle mapped
-                uniformly across the 24‑hour UTC day.<br />Each umi corresponds
-                to:
+                Umi‑Time is organized as a layered representation model. Each
+                layer adds meaning without modifying the information contained
+                in the layers below it. This separation allows a single
+                universal time value to coexist with locally meaningful
+                interpretation and optional solar context.
               </p>
 
-              <pre><code>1/360 of a 24‑hour UTC day</code></pre>
-
-              <p>
-                This uniform mapping ensures that Umi‑Time umi advance at a
-                constant rate, remain intuitive, and pair cleanly with UTC time.
-              </p>
-
-              <p>
-                The observer’s longitude determines the orientation of the
-                Umi‑Time dial. Before applying any rotation, the dial defines
-                <span class="umi">0ᵘ</span> at the bottom of the watch face,
-                with umi values increasing clockwise. The dial is then rotated
-                by the observer’s longitude: clockwise for positive longitudes
-                and counterclockwise for negative longitudes, by the same number
-                of degrees as the observer’s longitude.<br />
-                After this rotation, the umi value appearing at the bottom is
-                Umi‑Time midnight, and the value at the top is Umi‑Time noon.
-                This establishes a single canonical anchor:
-                <span class="umi">0ᵘ</span> is the pre‑rotation bottom, and
-                <a href="#umi-time-midnight">Umi‑Time midnight</a> is the
-                post‑rotation bottom.
-              </p>
+              <ul>
+                <li>
+                  <strong>Layer 0 — UTC:</strong> The universal time reference.
+                </li>
+                <li>
+                  <strong>Layer 1 — Umi‑Time Representation:</strong> A
+                  continuous 360‑umi representation of the UTC day.
+                </li>
+                <li>
+                  <strong>Layer 2 — Local Interpretation:</strong>
+                  Longitude‑based local context that relates the universal
+                  Umi‑Time value to an observer's day.
+                </li>
+                <li>
+                  <strong>Layer 3 — Solar Context:</strong> Optional
+                  astronomical context derived from location and date.
+                </li>
+              </ul>
 
               <p>
-                Solar geometry determines the placement of events on the solar
-                ring —
-                <a href="#physical-solar-noon">physical solar noon</a> near the
-                top,
-                <a href="#physical-solar-midnight">physical solar midnight</a>
-                near the bottom, and
-                <a href="#sunrise-sunset">sunrise/sunset</a> positioned
-                according to their true locations — but does not affect the umi
-                progression or dial orientation.
+                Higher layers may add interpretation, but shall not modify
+                information contained in lower layers.
               </p>
 
-              <p>
-                <a href="#umi-time-umi">Umi‑Time umi</a> are universal; the dial
-                orientation is local. Umi‑Time does not define a global solar
-                day boundary. When a calendar date is combined with a Umi‑Time
-                value, the date may be interpreted either as the universal UTC
-                calendar date or as the observer’s
-                <a href="#umi-date">Umi‑Date</a>, depending on whether the
-                representation includes local context.
-              </p>
+              <ol>
+                <li>
+                  <h3>UTC Layer</h3>
+
+                  <p>
+                    UTC provides the underlying universal time reference from
+                    which Umi‑Time is derived. It remains the authoritative
+                    temporal coordinate and is shared identically by all
+                    observers.
+                  </p>
+
+                  <p>
+                    Umi‑Time does not replace UTC and does not define a new time
+                    scale. Instead, it provides an alternative representation of
+                    the UTC day.
+                  </p>
+                </li>
+
+                <li>
+                  <h3>Umi‑Time Representation Layer</h3>
+
+                  <p>
+                    The UTC day is represented as a continuous 360‑umi cycle
+                    mapped uniformly across a 24‑hour UTC day.
+                  </p>
+
+                  <pre><code>1 umi = 1/360 of a 24‑hour UTC day</code></pre>
+
+                  <p>
+                    This uniform mapping ensures that Umi‑Time advances at a
+                    constant rate, remains intuitive, and maintains an exact
+                    correspondence with UTC.
+                  </p>
+
+                  <p>
+                    The resulting Umi‑Time coordinate is universal. Every
+                    observer shares the same Umi‑Time value at the same moment
+                    regardless of location.
+                  </p>
+                </li>
+
+                <li>
+                  <h3>Local Interpretation Layer</h3>
+
+                  <p>
+                    Longitude provides local context without altering the
+                    underlying Umi‑Time value. This layer relates the universal
+                    Umi‑Time coordinate to an observer's local day.
+                  </p>
+
+                  <p>
+                    Different forms of presentation may realize this layer in
+                    different ways. Analog clocks commonly use dial orientation,
+                    while digital and textual representations commonly use day
+                    phases, local context indicators, or other longitude‑derived
+                    conventions.
+                  </p>
+
+                  <p>
+                    One common analog implementation defines
+                    <span class="umi">0ᵘ</span> at the bottom of an unrotated
+                    dial, with umi values increasing clockwise. The dial is then
+                    rotated according to the observer's longitude.
+                  </p>
+
+                  <p>
+                    After this rotation, the value appearing at the bottom
+                    becomes
+                    <a href="#umi-time-midnight">Umi‑Time midnight</a>, and the
+                    value at the top becomes
+                    <a href="#umi-time-noon">Umi‑Time noon</a>. This establishes
+                    a longitude‑dependent local interpretation without changing
+                    the underlying Umi‑Time value.
+                  </p>
+                </li>
+
+                <li>
+                  <h3>Solar Context Layer</h3>
+
+                  <p>
+                    Solar context provides optional astronomical information
+                    derived from the observer's location and date. This context
+                    may include sunrise, sunset, twilight, daytime, nighttime,
+                    and related solar events.
+                  </p>
+
+                  <p>
+                    Solar context augments interpretation but never alters
+                    either the universal Umi‑Time value or the longitude‑based
+                    local interpretation.
+                  </p>
+
+                  <p>
+                    Analog implementations commonly represent solar context
+                    using a solar ring. Digital and textual representations
+                    frequently omit this layer because solar information cannot
+                    usually be conveyed compactly without sacrificing clarity.
+                  </p>
+                </li>
+
+                <li>
+                  <h3>Derived Local Concepts</h3>
+
+                  <p>
+                    Umi‑Time does not define a global solar‑day boundary. When a
+                    calendar date is combined with a Umi‑Time value, the date
+                    may be interpreted either as the universal UTC calendar date
+                    or as the observer's
+                    <a href="#umi-date">Umi‑Date</a>, depending on whether local
+                    context is included.
+                  </p>
+
+                  <p>
+                    <a href="#umi-day">Umi‑Day</a>,
+                    <a href="#umi-date">Umi‑Date</a>,
+                    <a href="#umi-time-noon">Umi‑Time noon</a>, and
+                    <a href="#umi-time-midnight">Umi‑Time midnight</a> are
+                    longitude‑dependent local interpretations derived from the
+                    universal <a href="#ut">UT</a> coordinate.
+                  </p>
+                </li>
+              </ol>
             </li>
             <li>
               <h2>Solar Geometry Inputs</h2>
@@ -369,11 +480,13 @@
             </li>
             <li>
               <h2>Computing Umi‑Time Umi</h2>
+              <p></p>
               <p>
-                Umi‑Time uses a direct, uniform mapping from UTC time to a
-                0ᵘ–360ᵘ cycle.<br />This ensures that Umi‑Time advances at a
-                constant rate, remains intuitive, and pairs cleanly with UTC
-                time.
+                Umi‑Time uses a direct, uniform mapping from the UTC day into a
+                continuous 360‑umi cycle.<br />
+                This ensures that umi values advance at a constant rate, remain
+                easy to reason about, and maintain an exact correspondence with
+                UTC.
               </p>
               <ol>
                 <li>
@@ -425,7 +538,7 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                   <h3>Continuous Umi Cycle</h3>
                   <p>
                     UT is a continuous value that increases smoothly throughout
-                    the day. To keep it within the 0ᵘ–360ᵘ range, it is
+                    the day. To keep it within a single 360‑umi cycle, it is
                     normalized using:
                   </p>
                   <pre><code>UT = UT mod 360ᵘ</code></pre>
@@ -735,9 +848,9 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                   </p>
 
                   <p>
-                    Longitude determines where Umi‑Time midnight falls on the
-                    0ᵘ–360ᵘ dial. Using the standard degree‑to‑umi conversion,
-                    it is computed as:
+                    Longitude determines how the Umi‑Time dial is oriented for a
+                    given observer. Using the standard degree‑to‑umi conversion,
+                    the position of local midnight is computed as:
                   </p>
 
                   <p style="text-align: center">
@@ -2592,8 +2705,9 @@ umi-representation = standalone | combined ;</code></pre>
                 <strong>any license</strong>—open‑source or proprietary—provided
                 they accurately implement the normative requirements of Umi‑Time
                 and do not present Umi‑Time as a different or incompatible time
-                system. The CC-BY-4.0 License governing this specification does not
-                extend to, or restrict, independent implementations.
+                presentation standard. The CC-BY-4.0 License governing this
+                specification does not extend to, or restrict, independent
+                implementations.
               </p>
 
               <p>
@@ -2607,19 +2721,19 @@ umi-representation = standalone | combined ;</code></pre>
               <h2>Summary</h2>
 
               <p>
-                Umi‑Time is an open standard planetary time system that presents
+                Umi‑Time is a UTC‑based representation standard that presents
                 UTC as a universal, location‑independent timestamp for global
-                coordination. It expresses the day as a continuous 0ᵘ–360ᵘ cycle
-                mapped exactly from UTC, ensuring that umi values advance at a
-                constant rate everywhere on Earth and that every moment has a
-                single shared value. This gives humanity a common daily
-                reference that remains stable across all longitudes.
+                coordination. It expresses the UTC day as a continuous 360‑umi
+                cycle mapped exactly from UTC, ensuring that umi values advance
+                at a constant rate everywhere on Earth and that every moment has
+                a single shared value. This provides humanity with a common
+                daily reference that remains stable across all longitudes.
               </p>
 
               <p>
-                While the umi progression is universal, the orientation of the
-                Umi‑Time dial is local and determined solely by the observer’s
-                longitude. This rotational offset roughly aligns
+                While the umi progression is universal, the local interpretation
+                is determined by the observer's longitude. This rotational
+                offset roughly aligns
                 <a href="#umi-time-noon">Umi‑Time noon</a> and
                 <a href="#umi-time-midnight">Umi‑Time midnight</a> with the
                 local sky without altering the underlying umi value. Solar

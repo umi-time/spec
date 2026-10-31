@@ -2,7 +2,7 @@
   "title": "Umi-Time Specification",
   "upload_type": "publication",
   "publication_type": "technicalnote",
-  "description": "The canonical, self-contained specification for the Umi-Time standard. Umi-Time gives us one shared number for the exact same instant globally, while presenting it in a way that is locally meaningful across visual, textual, and digital interfaces. This specification defines the 0ᵘ–360ᵘ umi unit system, its direct mapping from UTC, and the structural layers for local presentation under an observer’s sky.",
+  "description": "The canonical, self-contained specification for the Umi-Time standard. Umi-Time gives us one shared number for the exact same instant globally, while presenting it in a way that is locally meaningful across visual, textual, and digital interfaces. This specification defines the Umi‑Time standard: a 360‑umi representation of the UTC day, its exact conversion to and from UTC, and the layered framework used to provide locally meaningful presentation.",
   "creators": [
     {
       "name": "Brannon, Daniel",

@@ -54,36 +54,44 @@
               </p>
 
               <p>
-                While the umi progression is universal, the orientation of the
-                Umi‑Time dial is local and determined solely by the observer’s
-                longitude. Longitude sets the rotational offset that places
-                Umi‑Time noon at the top of the solar ring and Umi‑Time midnight
-                at the bottom, aligning the dial with the observer’s sky without
-                altering the underlying umi value.
+                Umi‑Time is organized as a layered representation model. UTC
+                provides the underlying universal time reference. Umi‑Time
+                expresses that reference as a continuous 360‑umi cycle.
+                Additional layers may then provide local interpretation and
+                optional solar context without altering the underlying Umi‑Time
+                value.
               </p>
 
               <p>
-                Solar geometry—<a href="#sunrise-sunset">sunrise and sunset</a>,
-                twilight phases, and physical solar noon—is computed separately
-                and drawn on the fixed solar ring that surrounds the dial. These
-                features provide local daylight context but do not affect the
-                rate of umi progression or the dial’s longitude‑based
-                orientation.
+                Local interpretation is determined solely by the observer's
+                longitude. Longitude establishes the relationship between the
+                universal Umi‑Time coordinate and the observer's local day,
+                while preserving the same Umi‑Time value for all observers.
               </p>
 
               <p>
-                Together, this separation of concerns makes Umi‑Time both
-                globally uniform and locally meaningful: a single planetary time
-                value enriched by the geometry of the day. This specification
-                defines:
+                Solar geometry—including
+                <a href="#sunrise-sunset">sunrise and sunset</a>, twilight
+                phases, and physical solar noon—is computed independently from
+                the Umi‑Time coordinate. Solar context may be used to enrich
+                local interpretation but does not affect the rate of Umi‑Time
+                progression or the longitude‑based local interpretation.
+              </p>
+
+              <p>
+                Together, these layers allow Umi‑Time to be both globally
+                uniform and locally meaningful: a single universal time
+                representation enriched by geographic and astronomical context.
+                This specification defines:
               </p>
 
               <ul>
                 <li>the Umi‑Time standard</li>
-                <li>the solar geometry inputs</li>
+                <li>the layered representation model</li>
                 <li>the computational model</li>
-                <li>the dial orientation rules</li>
-                <li>the display conventions</li>
+                <li>the local interpretation rules</li>
+                <li>the solar context model</li>
+                <li>reference presentation guidance</li>
                 <li>the textual representation and conformance requirements</li>
               </ul>
 
@@ -153,23 +161,22 @@
                 <li>
                   <h3>Umi‑Time Noon</h3>
                   <p>
-                    The <a href="#umi-time-umi">umi</a> value that appears at
-                    the top of the Umi‑Time dial after applying the observer’s
-                    longitude‑based rotational offset. It represents the
-                    observer’s meridian‑aligned midpoint of the
-                    <a href="#umi-day">Umi‑Day</a>
-                    cycle.
+                    The longitude‑dependent
+                    <a href="#umi-time-umi">umi</a> value corresponding to the
+                    midpoint of the local <a href="#umi-day">Umi‑Day</a>. In
+                    analog implementations, Umi‑Time noon is conventionally
+                    displayed at the top of the dial.
                   </p>
                 </li>
                 <li>
                   <h3>Umi‑Time Midnight</h3>
                   <p>
-                    The <a href="#umi-time-umi">umi</a> value that appears at
-                    the bottom of the Umi‑Time dial after applying the
-                    observer’s longitude‑based rotational offset. It represents
-                    the observer’s meridian‑aligned nadir of the
-                    <a href="#umi-day">Umi‑Day</a>
-                    cycle.
+                    The longitude‑dependent
+                    <a href="#umi-time-umi">umi</a> value corresponding to the
+                    boundary between consecutive
+                    <a href="#umi-day">Umi‑Day</a> cycles. In analog
+                    implementations, Umi‑Time midnight is conventionally
+                    displayed at the bottom of the dial.
                   </p>
                 </li>
                 <li>
@@ -241,25 +248,6 @@
                   <p>
                     The moments when the Sun’s upper limb crosses the horizon,
                     corrected for atmospheric refraction.
-                  </p>
-                </li>
-                <li>
-                  <h3>Dial</h3>
-                  <p>
-                    The rotating portion of the Umi‑Time face. It carries the
-                    umi markers only, with umi values increasing clockwise, and
-                    is rotated by the observer’s longitude.
-                  </p>
-                </li>
-                <li>
-                  <h3>Solar Ring</h3>
-                  <p>
-                    The fixed portion of the Umi‑Time face surrounding the dial.
-                    It carries solar‑geometry features such as
-                    <a href="#sunrise-sunset">sunrise and sunset</a> markers and
-                    twilight gradients, measured in degrees clockwise from
-                    <a href="#umi-time-midnight">Umi‑Time midnight</a> at the
-                    bottom.
                   </p>
                 </li>
               </ol>
@@ -351,27 +339,9 @@
 
                   <p>
                     Different forms of presentation may realize this layer in
-                    different ways. Analog clocks commonly use dial orientation,
-                    while digital and textual representations commonly use day
-                    phases, local context indicators, or other longitude‑derived
-                    conventions.
-                  </p>
-
-                  <p>
-                    One common analog implementation defines
-                    <span class="umi">0ᵘ</span> at the bottom of an unrotated
-                    dial, with umi values increasing clockwise. The dial is then
-                    rotated according to the observer's longitude.
-                  </p>
-
-                  <p>
-                    After this rotation, the value appearing at the bottom
-                    becomes
-                    <a href="#umi-time-midnight">Umi‑Time midnight</a>, and the
-                    value at the top becomes
-                    <a href="#umi-time-noon">Umi‑Time noon</a>. This establishes
-                    a longitude‑dependent local interpretation without changing
-                    the underlying Umi‑Time value.
+                    different ways. Analog, digital, textual, and cartographic
+                    representations can all express the same longitude‑derived
+                    local interpretation.
                   </p>
                 </li>
 
@@ -389,13 +359,6 @@
                     Solar context augments interpretation but never alters
                     either the universal Umi‑Time value or the longitude‑based
                     local interpretation.
-                  </p>
-
-                  <p>
-                    Analog implementations commonly represent solar context
-                    using a solar ring. Digital and textual representations
-                    frequently omit this layer because solar information cannot
-                    usually be conveyed compactly without sacrificing clarity.
                   </p>
                 </li>
 
@@ -423,82 +386,37 @@
               </ol>
             </li>
             <li>
-              <h2>Solar Geometry Inputs</h2>
+              <h2>Umi‑Time Transformation</h2>
+
               <p>
-                The umi value itself requires only UTC. The solar ring requires
-                the following astronomical inputs:
+                This section defines the requirements for Layer 1 of the
+                Umi‑Time model: the transformation of UTC into a continuous
+                Umi‑Time coordinate.
               </p>
-              <ul>
-                <li>
-                  <strong>Latitude (\(\phi\))</strong> — Observer’s north–south
-                  position on Earth.
-                </li>
-                <li>
-                  <strong>Longitude (\(\lambda\))</strong> — Observer’s
-                  east–west position; determines
-                  <a href="#umi-time-noon">Umi‑Time noon</a>/<a
-                    href="#umi-time-midnight"
-                    >Umi‑Time midnight</a
-                  >
-                  alignment.
-                </li>
-                <li>
-                  <strong>Solar declination (\(\delta\))</strong> — Sun’s
-                  angular position north or south of the celestial equator.
-                </li>
-                <li>
-                  <strong>Equation of time (EoT)</strong> — Difference between
-                  apparent solar time and mean solar time.
-                </li>
-                <li>
-                  <strong>Solar hour angle (H)</strong> — Angular distance of
-                  the Sun east or west of
-                  <a href="#physical-solar-noon">physical solar noon</a>.
-                </li>
-                <li>
-                  <strong>Solar altitude (\(\alpha\))</strong> — Angle of the
-                  Sun above the horizon.
-                </li>
-                <li>
-                  <strong>Solar azimuth (A)</strong> — Compass direction of the
-                  Sun along the horizon.
-                </li>
-                <li>
-                  <strong>Julian date (JD)</strong> — Continuous astronomical
-                  day count used for solar calculations.
-                </li>
-              </ul>
-              <p>
-                These values may be obtained from standard solar position
-                algorithms such as:
-              </p>
-              <ul>
-                <li>NOAA Solar Calculator</li>
-                <li>NREL SPA (Solar Position Algorithm)</li>
-                <li>Meeus Astronomical Algorithms</li>
-              </ul>
-            </li>
-            <li>
-              <h2>Computing Umi‑Time Umi</h2>
-              <p></p>
+
               <p>
                 Umi‑Time uses a direct, uniform mapping from the UTC day into a
-                continuous 360‑umi cycle.<br />
-                This ensures that umi values advance at a constant rate, remain
-                easy to reason about, and maintain an exact correspondence with
-                UTC.
+                continuous 360‑umi cycle. This mapping ensures that Umi‑Time
+                advances at a constant rate, remains easy to reason about, and
+                maintains an exact correspondence with UTC.
               </p>
+
               <ol>
                 <li>
                   <h3>Direct UTC Mapping</h3>
+
                   <p>
                     Umi‑Time uses SI seconds as its underlying physical time
                     unit. All computations are performed using UTC
                     seconds-of-day.
                   </p>
-                  <p>Umi‑Time umi are computed as:</p>
+
+                  <p>The continuous Umi‑Time coordinate (UT) is computed as:</p>
+
                   <pre><code>UT = 360ᵘ × (UTC_seconds_of_day / 86400s)</code></pre>
+
                   <p>Where:</p>
+
                   <ul>
                     <li>
                       <code>UTC_seconds_of_day</code> is the number of elapsed
@@ -508,435 +426,265 @@
                       86400 is the number of SI seconds in a nominal UTC day.
                     </li>
                   </ul>
+
                   <p>
-                    For textual representation, the umi and umi‑second fields
-                    are derived from the same quantity:
+                    This mapping establishes a direct correspondence between UTC
+                    and Umi‑Time, allowing conversion in either direction
+                    without loss of precision.
                   </p>
+                </li>
+
+                <li>
+                  <h3>Textual Representation Components</h3>
+
+                  <p>
+                    For textual representations, the umi and umi‑second
+                    components are derived from the same continuous coordinate:
+                  </p>
+
                   <pre><code>umi        = ⌊UTC_seconds_of_day / 240⌋
 umi-second = UTC_seconds_of_day mod 240</code></pre>
+
                   <p>
                     When <code>UTC_seconds_of_day</code> includes a fractional
-                    part, that fraction is carried by the umi‑second. The
-                    inverse conversion is exact:
+                    part, that fraction is carried by the umi‑second.
                   </p>
+
+                  <p>The inverse conversion is exact:</p>
+
                   <pre><code>UTC_seconds_of_day = umi × 240 + umi-second</code></pre>
-                  <p>This mapping ensures:</p>
-                  <ul>
-                    <li>Umi‑Time umi advance uniformly.</li>
-                    <li>Seconds in Umi‑Time match SI seconds.</li>
-                    <li>
-                      The slow hand rotates once every 24 hours at a constant
-                      speed.
-                    </li>
-                    <li>
-                      Umi‑Time remains simple, predictable, and universally
-                      understandable.
-                    </li>
-                  </ul>
                 </li>
+
                 <li>
-                  <h3>Continuous Umi Cycle</h3>
+                  <h3>Continuous Cycle</h3>
+
                   <p>
                     UT is a continuous value that increases smoothly throughout
                     the day. To keep it within a single 360‑umi cycle, it is
                     normalized using:
                   </p>
+
                   <pre><code>UT = UT mod 360ᵘ</code></pre>
+
                   <p>
                     This wrap‑around ensures that the measure remains
-                    continuous, with no jumps when the value passes 360ᵘ and
-                    returns to 0ᵘ.
+                    continuous, with no discontinuity as the value transitions
+                    from the end of one cycle to the beginning of the next.
                   </p>
                 </li>
+
                 <li>
-                  <h3>Separation of Umi Progression and Dial Orientation</h3>
+                  <h3>Layer Independence</h3>
+
                   <p>
-                    The orientation of the Umi‑Time dial is determined
-                    <strong>solely by longitude</strong>. Longitude sets the
-                    rotational offset that places
-                    <a href="#umi-time-noon">Umi‑Time noon</a> at the top of the
-                    solar ring and
-                    <a href="#umi-time-midnight">Umi‑Time midnight</a> at the
-                    bottom.
+                    The Layer 1 Umi‑Time coordinate is universal and
+                    location‑independent. Local interpretation and solar context
+                    are defined by higher layers of the Umi‑Time model and do
+                    not affect the computation, progression, or rate of change
+                    of UT.
                   </p>
 
                   <p>
-                    Solar geometry governs the placement of
+                    This separation ensures that all observers share the same
+                    Umi‑Time value at the same moment regardless of longitude,
+                    latitude, or local solar conditions.
+                  </p>
+                </li>
+              </ol>
+            </li>
+            <li>
+              <h2>Local Longitude‑Based Presentation</h2>
+
+              <p>
+                This section defines the requirements for Layer 2 of the
+                Umi‑Time model: the derivation of local context from longitude.
+              </p>
+
+              <p>
+                Umi‑Time values are universal and remain identical for all
+                observers at the same moment. Layer 2 provides local
+                interpretation by relating the universal Umi‑Time coordinate to
+                an observer's longitude.
+              </p>
+
+              <p>
+                Longitude alone determines local interpretation. Solar geometry,
+                date, season, sunrise, sunset, twilight, and other astronomical
+                events have no influence on Layer 2 calculations.
+              </p>
+
+              <ol>
+                <li>
+                  <h3>Longitude Relationship</h3>
+
+                  <p>
+                    Local interpretation is derived directly from the observer's
+                    longitude. Longitude establishes the relationship between
+                    the universal UT coordinate and the observer's local day.
+                  </p>
+
+                  <p>This relationship defines:</p>
+
+                  <ul>
+                    <li>
+                      <a href="#umi-time-noon">Umi‑Time noon</a>
+                    </li>
+                    <li>
+                      <a href="#umi-time-midnight">Umi‑Time midnight</a>
+                    </li>
+                    <li>
+                      <a href="#umi-day">Umi‑Day</a>
+                    </li>
+                    <li>
+                      <a href="#umi-date">Umi‑Date</a>
+                    </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <h3>Independence from Solar Context</h3>
+
+                  <p>
+                    Local interpretation is determined solely by longitude and
+                    remains independent of Layer 3 solar context.
+                  </p>
+
+                  <p>
+                    Solar events such as
                     <a href="#sunrise-sunset">sunrise and sunset</a>, twilight
-                    phases, and other solar‑day complications on the fixed solar
-                    ring. These features are
-                    <strong>mapped relative to Umi‑Time midnight</strong>, but
-                    solar geometry <strong>does not affect the rate</strong> at
-                    which Umi‑Time umi advance.
-                  </p>
-
-                  <p>This separation provides:</p>
-                  <ul>
-                    <li>
-                      longitude‑accurate
-                      <a href="#umi-time-noon">Umi‑Time noon</a>/<a
-                        href="#umi-time-midnight"
-                        >Umi‑Time midnight</a
-                      >
-                      alignment
-                    </li>
-                    <li>
-                      solar‑accurate
-                      <a href="#sunrise-sunset">sunrise and sunset</a> and
-                      twilight positioning
-                    </li>
-                    <li>intuitive correspondence with civil time</li>
-                    <li>constant, uniform rate of umi advance</li>
-                  </ul>
-                </li>
-              </ol>
-            </li>
-            <li>
-              <h2>Dial Orientation</h2>
-              <p>
-                The Umi‑Time dial is longitude‑oriented so that the dial aligns
-                with the observer’s local meridian. Solar geometry determines
-                <a href="#sunrise-sunset">sunrise and sunset</a> placement and
-                other solar‑day features on the solar ring, but dial orientation
-                is determined by longitude only and does not change with solar
-                geometry.
-              </p>
-              <p>
-                The <strong>dial</strong> is the rotating portion of the watch
-                face. It contains the <strong>umi markers only</strong>,
-                increasing clockwise.
-              </p>
-              <ol>
-                <li>
-                  <h3>Dial Rotation (Umi‑Time Noon &amp; Midnight Anchors)</h3>
-                  <p>
-                    <strong>Purpose:</strong><br />Align the dial so that
-                    Umi‑Time noon and Umi‑Time midnight always appear at fixed
-                    positions relative to the solar ring, regardless of date or
-                    solar geometry.
-                  </p>
-                  <p><strong>Inputs Used (Dial Only):</strong></p>
-                  <ul>
-                    <li>
-                      <strong>Longitude (λ)</strong> — determines the rotation
-                      of the dial so that:
-                      <ul>
-                        <li>
-                          Top of dial →
-                          <a href="#umi-time-noon">Umi‑Time noon</a>
-                        </li>
-                        <li>
-                          Bottom of dial →
-                          <a href="#umi-time-midnight">Umi‑Time midnight</a>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                  <p><strong>Notes:</strong></p>
-                  <ul>
-                    <li>Dial orientation is determined by longitude only.</li>
-                  </ul>
-                </li>
-              </ol>
-            </li>
-            <li>
-              <h2>Solar‑Geometry‑Based Visual Features</h2>
-              <p>
-                Umi‑Time supports optional solar‑day visualizations
-                (“complications”) that enrich the watch face with local solar
-                information.
-              </p>
-              <p>
-                The <strong>solar ring</strong> is a fixed portion of the watch
-                face that surrounds the dial. It contains the
-                <strong>sunrise/sunset markers</strong> and the
-                <strong>color gradients</strong> representing periods of the
-                day.
-              </p>
-              <p>
-                Solar geometry affects
-                <strong>what is drawn on the solar ring</strong>.
-              </p>
-              <ol>
-                <li>
-                  <h3>Variable Physical Solar Noon / Midnight Positions</h3>
-                  <p>
-                    The positions of
-                    <a href="#physical-solar-noon">physical solar noon</a> and
+                    phases,
+                    <a href="#physical-solar-noon">physical solar noon</a>, and
                     <a href="#physical-solar-midnight"
                       >physical solar midnight</a
                     >
-                    on the Umi‑Time solar ring vary by small amounts over the
-                    course of the year, but are generally positioned very close
-                    to the top and bottom of the solar ring.
-                  </p>
-                  <ul>
-                    <li>
-                      <strong>Physical solar noon</strong> → Near the top of
-                      solar ring
-                    </li>
-                    <li>
-                      <strong>Physical solar midnight</strong> → Near the bottom
-                      of solar ring
-                    </li>
-                  </ul>
-                  <p>
-                    These positions do not change by any significant amount
-                    visually. So it is not generally useful to mark them
-                    explicitly on the solar ring.
+                    do not affect the computation of Umi‑Time noon, Umi‑Time
+                    midnight, Umi‑Day, or Umi‑Date.
                   </p>
                 </li>
+
                 <li>
-                  <h3>Sunrise / Sunset Points (Solar Ring)</h3>
+                  <h3>Presentation Flexibility</h3>
+
                   <p>
-                    <strong>Purpose:</strong><br />Place
-                    <a href="#sunrise-sunset">sunrise and sunset</a> markers on
-                    the <strong>solar ring</strong> at their correct umi
-                    positions.
+                    Implementations may present Layer 2 local interpretation
+                    using analog, digital, textual, cartographic, or other
+                    visual forms.
                   </p>
-                  <p><strong>Inputs Used (Solar Ring):</strong></p>
-                  <ul>
-                    <li><strong>Latitude (\(\phi\))</strong></li>
-                    <li><strong>Solar declination (\(\delta\))</strong></li>
-                    <li><strong>Solar hour angle (H)</strong></li>
-                    <li><strong>Equation of Time (EoT)</strong></li>
-                    <li><strong>Julian date (JD)</strong></li>
-                    <li>
-                      <strong>Atmospheric refraction model (optional)</strong>
-                    </li>
-                    <li><strong>Terrain horizon model (optional)</strong></li>
-                  </ul>
-                  <p><strong>Notes:</strong></p>
-                  <ul>
-                    <li>
-                      These inputs determine <em>where</em>
-                      <a href="#sunrise-sunset">sunrise and sunset</a>
-                      appear on the solar ring.
-                    </li>
-                    <li>
-                      <a href="#sunrise-sunset">Sunrise and sunset</a>
-                      positions vary throughout the year and must be computed
-                      dynamically.
-                    </li>
-                  </ul>
-                  <ol>
-                    <li>
-                      <h4>
-                        Sky Gradients (Golden Hour, Blue Hour, Twilight) — Solar
-                        Ring
-                      </h4>
-                      <p>
-                        <strong>Purpose:</strong><br />Render twilight phases
-                        and color gradients on the
-                        <strong>solar ring</strong> around
-                        <a href="#sunrise-sunset">sunrise and sunset</a>.
-                      </p>
-                      <p><strong>Inputs Used (Solar Ring):</strong></p>
-                      <ul>
-                        <li><strong>Latitude (\(\phi\))</strong></li>
-                        <li>
-                          <strong>Solar declination (\(\delta\))</strong>
-                        </li>
-                        <li><strong>Solar altitude (\(\alpha\))</strong></li>
-                        <li><strong>Solar azimuth (A)</strong></li>
-                        <li><strong>Julian date (JD)</strong></li>
-                        <li><strong>Atmospheric refraction model</strong></li>
-                        <li>
-                          <strong
-                            >Civil / nautical / astronomical twilight altitude
-                            thresholds</strong
-                          >
-                        </li>
-                      </ul>
-                      <p><strong>Notes:</strong></p>
-                      <ul>
-                        <li>
-                          Twilight phases depend on solar altitude relative to
-                          the horizon.
-                        </li>
-                        <li>Gradients are drawn on the solar ring.</li>
-                      </ul>
-                    </li>
-                  </ol>
-                </li>
-                <li>
-                  <h3>Local Civil Time Indicator</h3>
+
                   <p>
-                    <strong>Purpose:</strong><br />Display local civil time in
-                    relation to Umi‑Time.
-                  </p>
-                  <p><strong>Inputs Used:</strong></p>
-                  <ul>
-                    <li><strong>Timezone offset (UTC±X)</strong></li>
-                    <li>
-                      <strong>Daylight saving rules (if applicable)</strong>
-                    </li>
-                  </ul>
-                  <p><strong>Notes:</strong></p>
-                  <ul>
-                    <li>
-                      Civil time is mapped onto Umi‑Time umi as an auxiliary
-                      indicator.
-                    </li>
-                    <li>
-                      Timezone does <strong>not</strong> affect dial
-                      orientation.
-                    </li>
-                    <li>
-                      This complication helps users relate Umi‑Time umi to
-                      familiar civil time.
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <h3>Date Representation</h3>
-                  <p>
-                    Implementations that display solar geometry may optionally
-                    display the <a href="#umi-date">Umi‑Date</a> corresponding
-                    to the observer’s solar day.
+                    Regardless of presentation format, all conforming
+                    implementations shall preserve the same longitude-derived
+                    relationship between the universal UT coordinate and the
+                    observer's local day.
                   </p>
                 </li>
               </ol>
             </li>
+
             <li>
-              <h2>Solar Event Computation Formulas</h2>
+              <h2>Solar Context</h2>
+
               <p>
-                Umi‑Time uses two similar unit systems to describe time and
-                angular quantities:
+                This section defines the requirements for Layer 3 of the
+                Umi‑Time model: optional solar context derived from the
+                observer's location, date, and the apparent position of the Sun.
               </p>
-              <ul>
-                <li>
-                  <strong>Umi‑Time</strong> — Umi‑Time <strong>umi</strong> (a
-                  time coordinate derived from UTC)
-                </li>
-                <li>
-                  <strong>°</strong> — (degrees) physical angle on the solar
-                  ring (a spatial coordinate, not to be confused with Umi‑Time
-                  umi)
-                </li>
-              </ul>
+
               <p>
-                The solar ring defines
-                <strong>0° at Umi‑Time midnight</strong>, located at the
-                <strong>bottom</strong> of the watch face.<br />Angles increase
-                <strong>clockwise</strong>.
+                Solar context enriches local interpretation by providing
+                information about daylight, twilight, and solar events. It does
+                not affect the computation of UT or the longitude‑based local
+                interpretation defined by Layer 2.
               </p>
-              <p>
-                All solar events are computed in UTC, converted to Umi‑Time,
-                then mapped to solar‑ring angles relative to Umi‑Time midnight.
-              </p>
+
               <ol>
                 <li>
-                  <h3>Umi Conversion</h3>
-                  <p>For any event time expressed in UTC hours:</p>
+                  <h3>Solar Geometry Inputs</h3>
+
                   <p>
-                    \[ \text{UT} = \frac{\text{UTC hours}}{24} \times
-                    360^\mathrm{u} \]
+                    The Umi‑Time coordinate itself requires only UTC. Solar
+                    context requires the following astronomical inputs:
                   </p>
+
+                  <ul>
+                    <li>
+                      <strong>Latitude (\(\phi\))</strong> — Observer's
+                      north-south position on Earth.
+                    </li>
+                    <li>
+                      <strong>Longitude (\(\lambda\))</strong> — Observer's
+                      east-west position on Earth.
+                    </li>
+                    <li>
+                      <strong>Solar declination (\(\delta\))</strong> — Sun's
+                      angular position north or south of the celestial equator.
+                    </li>
+                    <li>
+                      <strong>Equation of Time (EoT)</strong> — Difference
+                      between apparent solar time and mean solar time.
+                    </li>
+                    <li>
+                      <strong>Solar hour angle (H)</strong> — Angular distance
+                      of the Sun east or west of
+                      <a href="#physical-solar-noon">physical solar noon</a>.
+                    </li>
+                    <li>
+                      <strong>Solar altitude (\(\alpha\))</strong> — Angle of
+                      the Sun above the horizon.
+                    </li>
+                    <li>
+                      <strong>Solar azimuth (A)</strong> — Compass direction of
+                      the Sun along the horizon.
+                    </li>
+                    <li>
+                      <strong>Julian date (JD)</strong> — Continuous
+                      astronomical day count used for solar calculations.
+                    </li>
+                  </ul>
+
                   <p>
-                    Example:<br />08:00 UTC → \( \frac{8}{24} \times
-                    360^\mathrm{u} = 120^\mathrm{u} \)
+                    These values may be obtained from standard solar-position
+                    algorithms, including:
                   </p>
+
+                  <ul>
+                    <li>NOAA Solar Calculator</li>
+                    <li>NREL SPA (Solar Position Algorithm)</li>
+                    <li>Meeus Astronomical Algorithms</li>
+                  </ul>
                 </li>
+
                 <li>
-                  <h3>Umi‑Time Midnight Moment</h3>
+                  <h3>Solar Geometry</h3>
 
                   <p>
-                    Umi‑Time midnight is the moment represented by the bottom of
-                    the Umi‑Time dial. This value defines the 0° reference of
-                    the fixed solar ring.
-                  </p>
-
-                  <p>
-                    Longitude determines how the Umi‑Time dial is oriented for a
-                    given observer. Using the standard degree‑to‑umi conversion,
-                    the position of local midnight is computed as:
-                  </p>
-
-                  <p style="text-align: center">
-                    \[ UT_{\text{mid}} = \left( \left( 360 - \lambda \right)
-                    \times \frac{1^\mathrm{u}}{1^\circ} \right) \bmod
-                    360^\mathrm{u} \]
-                  </p>
-                </li>
-
-                <li id="dial-rotation-angle">
-                  <h3>Dial Rotation Angle (°)</h3>
-                  <p>
-                    The dial rotates so that Umi‑Time midnight appears at 0° at
-                    the bottom of the solar ring. Because Umi‑Time midnight is
-                    defined by longitude, the required physical rotation of the
-                    dial is directly determined by the observer’s longitude.
-                  </p>
-
-                  <p style="text-align: center">
-                    \[ \theta_{\text{rotation}} = \lambda \]
-                  </p>
-
-                  <p>
-                    Positive longitudes rotate the dial clockwise; negative
-                    longitudes rotate it counterclockwise.
-                  </p>
-                </li>
-                <li id="solar-ring-angle-mapping">
-                  <h3>Solar Ring Angle Mapping</h3>
-                  <p>
-                    Solar events are expressed in Umi‑Time. To place an event on
-                    the fixed solar ring, its UT value is converted to degrees
-                    and mapped relative to Umi‑Time midnight.
-                  </p>
-
-                  <p style="text-align: center">
-                    \[ \theta_{\text{event}} = \left( \left( (UT_{\text{event}}
-                    - UT_{\text{mid}}) + 360^\mathrm{u} \right) \times
-                    \frac{1^\circ}{1^\mathrm{u}} \right) \bmod 360^\circ \]
-                  </p>
-
-                  <p>
-                    This yields the event’s physical angle on the solar ring,
-                    with Umi‑Time midnight at 0° at the bottom and angles
-                    increasing clockwise.
-                  </p>
-                </li>
-                <li>
-                  <h3>Core Solar Geometry</h3>
-
-                  <p>
-                    This section defines all solar‑geometry quantities required
-                    for computing
-                    <a href="#sunrise-sunset">sunrise and sunset</a>, and
-                    related solar events. All formulas are self‑contained and
-                    require only the observer’s location and the UTC date/time.
-                    Explanation of these quantities is beyond the scope of this
-                    specification, but references are provided for further
-                    study.
+                    This section defines the solar-geometry quantities required
+                    for computing solar events and periods. All formulas are
+                    self-contained and require only the observer's location and
+                    the UTC date and time.
                   </p>
 
                   <p>
                     <strong>Note on trigonometric notation:</strong>
-                    In this and later sections, trigonometric functions are
-                    written with a degree symbol (e.g., sin°(x), cos°(x),
-                    tan°(x)) to indicate that their arguments are interpreted as
-                    degrees rather than radians. This avoids the need for
-                    explicit degree‑to‑radian conversion inside the formulas and
-                    keeps all angular quantities consistently expressed in
-                    degrees. Inverse trigonometric functions written with a
-                    degree symbol (e.g., arcsin°(x), arccos°(x),
-                    atan2°(y,&nbsp;x)) likewise return degrees. Most programming
-                    implementations will require explicit conversion to radians
-                    before using standard trigonometric functions.
+                    Trigonometric functions written with a degree symbol (e.g.
+                    sin°(x), cos°(x), tan°(x)) interpret their arguments as
+                    degrees rather than radians. Inverse trigonometric functions
+                    likewise return degrees. Programming implementations will
+                    typically require conversion to radians when using standard
+                    library functions.
                   </p>
 
                   <p>
-                    <strong>Evaluation time:</strong> the time‑dependent
-                    quantities below (in particular \(\delta\) and EoT) shall be
-                    evaluated at the UTC instant of the event being computed.
+                    <strong>Evaluation time:</strong> Time-dependent quantities
+                    below (particularly \(\delta\) and EoT) shall be evaluated
+                    at the UTC instant of the event being computed.
                     Implementations shall first evaluate them at 12:00 UTC on
-                    the date of interest to obtain an estimate of each event
-                    time, then re‑evaluate at the estimated event time and
+                    the date of interest to obtain an initial estimate of the
+                    event time, then re-evaluate at the estimated event time and
                     recompute the event. One such iteration is sufficient to
                     meet the accuracy requirements of this specification.
                   </p>
+
                   <ol>
                     <li>
                       <h4>Julian Date</h4>
@@ -1118,10 +866,14 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                     </li>
                   </ol>
                 </li>
-                <li>
-                  <h3>Solar Event Formulas (Umi‑Time)</h3>
 
-                  <p>Each solar event is expressed in umi.</p>
+                <li>
+                  <h3>Solar Events</h3>
+
+                  <p>
+                    Solar events are expressed as UT values and therefore relate
+                    directly to the universal Umi‑Time coordinate.
+                  </p>
 
                   <ol>
                     <li>
@@ -1160,9 +912,9 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                         day (no sunrise). Implementations shall detect both
                         cases, skip the
                         <a href="#sunrise-sunset">sunrise/sunset</a>
-                        calculations, and distinguish them so that the solar
-                        ring can be rendered as continuous day or continuous
-                        night.
+                        calculations, and distinguish them and distinguish them
+                        as continuous daylight or continuous darkness
+                        conditions.
                       </p>
                     </li>
                     <li>
@@ -1238,9 +990,15 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                     </li>
                   </ol>
                 </li>
+
                 <li>
-                  <h3>Twilight Boundaries (Umi‑Time)</h3>
-                  <p>Twilight boundaries use altitude thresholds:</p>
+                  <h3>Twilight Periods</h3>
+
+                  <p>
+                    Twilight boundaries are defined using solar-altitude
+                    thresholds:
+                  </p>
+
                   <ul>
                     <li>Astronomical: \( h = -18^\circ \)</li>
                     <li>Nautical: \( h = -12^\circ \)</li>
@@ -1254,11 +1012,19 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                       +6^\circ \)
                     </li>
                   </ul>
-                  <p>General hour‑angle formula:</p>
+
+                  <p>The general hour-angle formula is:</p>
+
                   <p style="text-align: center">
                     \[ H(h) = \arccos^\circ\!\left( \frac{ \sin^\circ h -
                     \sin^\circ\phi \cdot \sin^\circ\delta }{ \cos^\circ\phi
                     \cdot \cos^\circ\delta } \right) \]
+                  </p>
+
+                  <p>
+                    Morning and evening event times are derived from
+                    <a href="#physical-solar-noon">physical solar noon</a>
+                    using the formulas defined below.
                   </p>
 
                   <p>Morning event (Umi‑Time):</p>
@@ -1275,66 +1041,83 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                     360^\mathrm{u} \right) \bmod 360^\mathrm{u} \]
                   </p>
                   <p>
-                    Note: As for sunrise and sunset, the hour angle is undefined
-                    when the Sun is circumpolar at the threshold \(h\). An
-                    argument less than \(-1\) means the Sun stays above \(h\)
-                    all day; an argument greater than \(+1\) means it stays
-                    below \(h\) all day. Implementations shall detect and
-                    distinguish both cases and skip the associated twilight
-                    event.
+                    Circumpolar behavior shall be handled as specified in the
+                    <a href="#polar-conditions">Polar Conditions</a> section.
                   </p>
                 </li>
+
                 <li>
-                  <h3>Solar Ring Angles for All Events</h3>
+                  <h3>Polar Conditions</h3>
+
                   <p>
-                    After computing Umi‑Time for each event, its physical angle
-                    on the fixed solar ring is obtained using the Solar Ring
-                    Angle Mapping formula
-                    <a href="#solar-ring-angle-mapping">defined earlier</a>.
+                    At extreme latitudes, some solar events may not occur on a
+                    particular date. Sunrise, sunset, and twilight boundaries
+                    become undefined when the corresponding hour-angle
+                    calculation falls outside the valid domain of the inverse
+                    cosine function.
                   </p>
 
-                  <p>This mapping applies to all solar events:</p>
+                  <p>For any hour-angle calculation of the form:</p>
+
+                  <p style="text-align: center">\[ H = \arccos^\circ(x) \]</p>
+
+                  <p>the result is defined only when:</p>
+
+                  <p style="text-align: center">\[ -1 \le x \le 1 \]</p>
+
+                  <p>
+                    Implementations shall detect and distinguish the following
+                    conditions:
+                  </p>
+
                   <ul>
-                    <li>Astronomical twilight (AM/PM)</li>
-                    <li>Nautical twilight (AM/PM)</li>
-                    <li>Civil twilight (AM/PM)</li>
-                    <li>Blue hour (AM/PM)</li>
-                    <li>Golden hour (AM/PM)</li>
-                    <li><a href="#sunrise-sunset">Sunrise</a></li>
-                    <li><a href="#sunrise-sunset">Sunset</a></li>
                     <li>
-                      <a href="#physical-solar-midnight"
-                        >Physical solar midnight</a
-                      >
+                      <strong>Continuous daylight</strong> — the argument is
+                      less than \(-1\), indicating that the Sun remains above
+                      the relevant altitude threshold throughout the entire day.
                     </li>
+
                     <li>
-                      <a href="#physical-solar-noon">Physical solar noon</a>
+                      <strong>Continuous darkness</strong> — the argument is
+                      greater than \(+1\), indicating that the Sun remains below
+                      the relevant altitude threshold throughout the entire day.
                     </li>
                   </ul>
 
                   <p>
-                    All angles are drawn on the
-                    <strong>fixed solar ring</strong>, with the
-                    <strong>dial rotating beneath it</strong>.
+                    When either condition occurs, the corresponding solar event
+                    or boundary shall be treated as undefined and shall not be
+                    computed.
+                  </p>
+
+                  <p>
+                    This behavior applies to sunrise, sunset, and all twilight
+                    boundaries defined by this specification.
                   </p>
                 </li>
               </ol>
             </li>
+
             <li>
               <h2>Accuracy Requirements</h2>
+
               <ol>
                 <li>
                   <h3>Solar Position Accuracy</h3>
+
                   <p>
-                    Solar‑position accuracy affects the placement of
-                    <a href="#sunrise-sunset">sunrise, sunset</a>,
-                    <a href="#physical-solar-noon">physical solar noon</a>, and
+                    Solar-position accuracy affects the computation of
+                    <a href="#sunrise-sunset">sunrise</a>,
+                    <a href="#sunrise-sunset">sunset</a>,
+                    <a href="#physical-solar-noon">physical solar noon</a>,
                     <a href="#physical-solar-midnight"
                       >physical solar midnight</a
-                    >
-                    on the solar ring.
+                    >, twilight boundaries, and other solar-context information
+                    defined by this specification.
                   </p>
+
                   <p>Implementations should achieve:</p>
+
                   <ul>
                     <li>±0.1° solar azimuth accuracy</li>
                     <li>±0.1° solar altitude accuracy</li>
@@ -1343,21 +1126,33 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                       <a href="#sunrise-sunset">sunrise/sunset</a> accuracy
                     </li>
                   </ul>
+
                   <p>
-                    These values are achievable using the self‑contained
-                    solar‑geometry formulas provided in this specification and
-                    are sufficient for correct visual placement of all solar‑day
-                    features on the solar ring.
+                    These values are achievable using the self-contained
+                    solar-geometry formulas provided in this specification and
+                    are sufficient for accurate computation and presentation of
+                    solar context in conforming implementations.
                   </p>
                 </li>
+
                 <li>
                   <h3>Time Synchronization</h3>
-                  <p>Civil time input should be synchronized to:</p>
+
+                  <p>
+                    UTC time input should be synchronized to a reliable time
+                    source such as:
+                  </p>
+
                   <ul>
                     <li>NTP</li>
                     <li>GPS</li>
-                    <li>OS system clock</li>
+                    <li>Operating-system system clocks</li>
                   </ul>
+
+                  <p>
+                    Accurate UTC synchronization is required to ensure correct
+                    computation of UT and all derived Umi‑Time values.
+                  </p>
                 </li>
               </ol>
             </li>
@@ -1942,14 +1737,12 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                       </h4>
 
                       <p>
-                        The longitude offset suffix identifies the observer’s
-                        geographic longitude relative to the prime meridian.
-                        This suffix provides the textual equivalent of the
-                        dial’s longitude-based rotational offset and allows the
-                        reader to infer the observer’s approximate position
-                        within the solar day.
+                        The longitude offset suffix identifies the observer's
+                        geographic longitude relative to the prime meridian. It
+                        provides longitude‑derived local context and allows the
+                        reader to infer the observer's approximate position
+                        within the local Umi‑Day.
                       </p>
-
                       <p>
                         The longitude offset suffix is syntactically
                         distinguished by a leading plus or minus sign (<code
@@ -1993,21 +1786,20 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                         <code>P</code> followed by an integer in the inclusive
                         range <code>0</code>–<code>23</code>. Phase
                         <code>P0</code> corresponds to the interval beginning at
-                        Umi‑Time midnight, phase <code>P12</code> corresponds to
-                        the interval beginning at
-                        <a href="#umi-time-noon">Umi‑Time noon</a>, and phase
-                        <code>P23</code>
-                        corresponds to the final interval ending at the next
+                        <a href="#umi-time-midnight">Umi‑Time midnight</a>,
+                        phase <code>P12</code> corresponds to the interval
+                        beginning at <a href="#umi-time-noon">Umi‑Time noon</a>,
+                        and phase <code>P23</code> corresponds to the final
+                        interval ending at the next
                         <a href="#umi-time-midnight">Umi‑Time midnight</a>.
-                        These phases are fixed geometric divisions of the
-                        Umi‑Time dial and do not depend on
+                        These phases are fixed subdivisions of the local Umi‑Day
+                        and do not depend on
                         <a href="#physical-solar-noon">physical solar noon</a>
                         or
                         <a href="#physical-solar-midnight"
                           >physical solar midnight</a
                         >.
                       </p>
-
                       <p>
                         A conforming implementation shall compute the day phase
                         by determining the elapsed fraction of the
@@ -2021,8 +1813,7 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                         counterparts, this geometric division provides a
                         practical approximation of the
                         <a href="#physical-solar-day">physical solar day</a>
-                        while remaining simple to compute and consistent with
-                        the Umi‑Time dial.
+                        while remaining simple to compute.
                       </p>
 
                       <p>
@@ -2608,27 +2399,24 @@ umi-representation = standalone | combined ;</code></pre>
               </p>
 
               <p>
-                Implementations that provide a visual representation of
-                Umi‑Time, including dials, maps, or other longitude‑aligned
-                displays, shall ensure that the positions of solar events (such
-                as
+                Implementations that provide a visual representation of Umi‑Time
+                shall ensure that the positions of solar events (such as
                 <a href="#sunrise-sunset">sunrise</a>,
                 <a href="#physical-solar-noon">physical solar noon</a>,
                 <a href="#sunrise-sunset">sunset</a>, and other defined
                 reference points) are consistent with the Umi‑Time model and the
-                geometric relationships described in this specification. Visual
-                elements shall not contradict the underlying Umi‑Time value or
-                its interpretation.
+                solar-context relationships defined by this specification.
+                Visual elements shall not contradict the underlying Umi‑Time
+                value, local interpretation, or computed solar context.
               </p>
-
               <p>
                 Implementations shall not reinterpret umi values as solar time.
-                Solar geometry is applied only to the solar ring and shall not
-                modify the underlying umi progression, the canonical placement
-                of
-                <span class="umi">0ᵘ</span>, or the longitude‑based dial
-                orientation. Likewise, solar events shall not be used to
-                redefine or adjust any umi value.
+                Solar context provides additional information about the
+                observer's solar environment but shall not modify the underlying
+                Umi‑Time coordinate, the computation of UT, or the
+                longitude‑based local interpretation defined by Layer 2.
+                Likewise, solar events and solar conditions shall not be used to
+                redefine, adjust, or override any Umi‑Time value.
               </p>
 
               <p>
@@ -2649,7 +2437,7 @@ umi-representation = standalone | combined ;</code></pre>
 
               <ol>
                 <li>
-                  <h3>Conformance classes</h3>
+                  <h3>Conformance Classes</h3>
 
                   <p>
                     An implementation may claim conformance to one or more of
@@ -2659,103 +2447,243 @@ umi-representation = standalone | combined ;</code></pre>
 
                   <ul>
                     <li>
-                      <strong>Textual</strong> — parses and/or generates
-                      Umi‑Time values according to
-                      <a href="#textual-representation-of-umi-time"
-                        >Textual representation of Umi‑Time</a
-                      >, including the parsing and validation rules and date
-                      interpretation. A textual implementation need not compute
-                      solar geometry.
-                    </li>
-                    <li>
-                      <strong>Dial</strong> — computes the umi value from UTC
-                      and presents it on a dial rotated by longitude as defined
-                      in
-                      <a href="#computing-umi-time-umi"
-                        >Computing Umi‑Time Umi</a
+                      <strong>Layer 1 — Umi‑Time Transformation</strong> —
+                      computes and/or represents UT, umi, and umi‑second values
+                      according to the
+                      <a href="#umi-time-transformation"
+                        >Umi‑Time Transformation</a
                       >
-                      and <a href="#dial-orientation">Dial Orientation</a>. A
-                      dial implementation need not render a solar ring.
+                      requirements. A Layer 1 implementation need not provide
+                      local interpretation or solar context.
                     </li>
+
                     <li>
-                      <strong>Solar ring</strong> — additionally computes and
-                      renders solar events on the fixed solar ring as defined in
-                      <a href="#solar-event-computation-formulas"
-                        >Solar Event Computation Formulas</a
-                      >, meeting the
+                      <strong
+                        >Layer 2 — Local Longitude‑Based Presentation</strong
+                      >
+                      — implements longitude‑derived local interpretation as
+                      defined in
+                      <a href="#local-longitude-based-presentation">
+                        Local Longitude‑Based Presentation </a
+                      >, including Umi‑Time noon, Umi‑Time midnight, Umi‑Day,
+                      and Umi‑Date. Layer 2 conformance implies Layer 1
+                      conformance.
+                    </li>
+
+                    <li>
+                      <strong>Layer 3 — Solar Context</strong> — computes solar
+                      events and related solar-context information as defined in
+                      <a href="#solar-context">Solar Context</a>
+                      and meets the
                       <a href="#accuracy-requirements">Accuracy Requirements</a
-                      >. Solar ring conformance implies dial conformance.
+                      >. Layer 3 conformance implies Layer 1 and Layer 2
+                      conformance.
+                    </li>
+
+                    <li>
+                      <strong>Textual Representation</strong> — parses and/or
+                      generates Umi‑Time values according to
+                      <a href="#textual-representation-of-umi-time">
+                        Textual Representation of Umi‑Time </a
+                      >, including formatting, parsing, validation, and
+                      date-interpretation rules. Textual conformance is
+                      independent of Layer 2 and Layer 3 conformance.
                     </li>
                   </ul>
                 </li>
               </ol>
             </li>
             <li>
-              <h2>Licensing</h2>
+              <h2>Reference Implementations</h2>
 
               <p>
-                This specification is published under the CC-BY-4.0 License. The
-                license applies to the text of the specification itself and does
-                not impose any licensing requirements on software, hardware, or
-                documentation that implements Umi‑Time.
+                This section is informative and does not define conformance
+                requirements. It describes reference implementations that
+                illustrate recommended ways to present Umi‑Time while remaining
+                consistent with the requirements defined elsewhere in this
+                specification.
               </p>
 
               <p>
-                Implementations may use
-                <strong>any license</strong>—open‑source or proprietary—provided
-                they accurately implement the normative requirements of Umi‑Time
-                and do not present Umi‑Time as a different or incompatible time
-                presentation standard. The CC-BY-4.0 License governing this
-                specification does not extend to, or restrict, independent
-                implementations.
+                Implementations may use other visual, textual, cartographic, or
+                application‑specific representations provided they remain
+                consistent with the Umi‑Time model.
               </p>
 
-              <p>
-                Derivative works, extensions, and alternative presentations of
-                the specification are permitted under the terms of the CC-BY-4.0
-                License, so long as references to Umi‑Time remain truthful and
-                consistent with the standard defined here.
-              </p>
-            </li>
-            <li>
-              <h2>Summary</h2>
+              <ol>
+                <li>
+                  <h3>Analog Representation</h3>
 
-              <p>
-                Umi‑Time is a UTC‑based representation standard that presents
-                UTC as a universal, location‑independent timestamp for global
-                coordination. It expresses the UTC day as a continuous 360‑umi
-                cycle mapped exactly from UTC, ensuring that umi values advance
-                at a constant rate everywhere on Earth and that every moment has
-                a single shared value. This provides humanity with a common
-                daily reference that remains stable across all longitudes.
-              </p>
+                  <p>
+                    The reference analog representation uses a circular dial and
+                    hand to display the continuous Umi‑Time coordinate.
+                  </p>
 
-              <p>
-                While the umi progression is universal, the local interpretation
-                is determined by the observer's longitude. This rotational
-                offset roughly aligns
-                <a href="#umi-time-noon">Umi‑Time noon</a> and
-                <a href="#umi-time-midnight">Umi‑Time midnight</a> with the
-                local sky without altering the underlying umi value. Solar
-                geometry—<a href="#sunrise-sunset">sunrise</a>,
-                <a href="#sunrise-sunset">sunset</a>, twilight phases, and
-                <a href="#physical-solar-noon">physical solar noon</a>—is
-                computed separately and drawn on the fixed solar ring, providing
-                intuitive daylight context without affecting the global time
-                scale.
-              </p>
+                  <p>
+                    The dial represents a complete 360‑umi cycle and increases
+                    clockwise. The hand completes one full revolution per UTC
+                    day, providing a direct geometric representation of the
+                    continuous UT coordinate.
+                  </p>
 
-              <p>
-                This separation of concerns makes Umi‑Time both globally uniform
-                and locally meaningful: a single planetary time value enriched
-                by the geometry of the day via the fixed solar ring. The
-                specification defines the umi and umi‑second fields, the
-                permitted textual formats, the optional local‑context suffixes,
-                and the rules for parsing, validation, and visual
-                representation, establishing a coherent foundation for software,
-                science, communication, and human coordination at planetary
-                scale.
-              </p>
+                  <h4>Dial Orientation</h4>
+
+                  <p>
+                    The reference analog implementation expresses Layer 2 local
+                    interpretation through dial orientation.
+                  </p>
+
+                  <p>
+                    Before applying longitude, the dial places
+                    <span class="umi">0ᵘ</span> at the bottom and increases
+                    clockwise.
+                  </p>
+
+                  <p>The dial is then rotated by the observer's longitude:</p>
+
+                  <p style="text-align: center">
+                    \[ \theta_{\text{rotation}} = \lambda \]
+                  </p>
+
+                  <p>
+                    Positive longitudes rotate clockwise and negative longitudes
+                    rotate counterclockwise.
+                  </p>
+
+                  <p>
+                    This places
+                    <a href="#umi-time-noon">Umi‑Time noon</a> near the top of
+                    the dial and
+                    <a href="#umi-time-midnight">Umi‑Time midnight</a> near the
+                    bottom, creating a longitude‑aligned local interpretation
+                    while preserving the universal UT value.
+                  </p>
+
+                  <h4>Solar Ring</h4>
+
+                  <p>
+                    The reference analog implementation expresses Layer 3 solar
+                    context using a fixed solar ring surrounding the dial.
+                  </p>
+
+                  <p>
+                    Solar events are first computed as UT values and then mapped
+                    to angles relative to
+                    <a href="#umi-time-midnight">Umi‑Time midnight</a>.
+                  </p>
+
+                  <p style="text-align: center">
+                    \[ \theta_{\text{event}} = \left( \left( (UT_{\text{event}}
+                    - UT_{\text{mid}}) + 360^\mathrm{u} \right) \times
+                    \frac{1^\circ}{1^\mathrm{u}} \right) \bmod 360^\circ \]
+                  </p>
+
+                  <p>
+                    This places solar events at their corresponding positions
+                    relative to the observer's local day.
+                  </p>
+
+                  <h4>Solar Context Features</h4>
+
+                  <p>Common solar-context features include:</p>
+
+                  <ul>
+                    <li>
+                      <a href="#sunrise-sunset">sunrise</a> and
+                      <a href="#sunrise-sunset">sunset</a> markers
+                    </li>
+                    <li>daytime and nighttime regions</li>
+                    <li>civil, nautical, and astronomical twilight</li>
+                    <li>optional blue-hour and golden-hour indications</li>
+                  </ul>
+
+                  <p>
+                    Because
+                    <a href="#physical-solar-noon">physical solar noon</a> and
+                    <a href="#physical-solar-midnight"
+                      >physical solar midnight</a
+                    >
+                    generally remain close to the top and bottom of the display,
+                    implementations typically do not need to mark them
+                    explicitly.
+                  </p>
+
+                  <h4>Optional Auxiliary Indicators</h4>
+
+                  <p>Analog implementations may optionally include:</p>
+
+                  <ul>
+                    <li>local civil time</li>
+                    <li>UTC</li>
+                    <li><a href="#umi-date">Umi‑Date</a></li>
+                    <li>calendar date</li>
+                  </ul>
+
+                  <p>
+                    Such indicators provide additional context but do not alter
+                    the underlying Umi‑Time representation.
+                  </p>
+                </li>
+
+                <li>
+                  <h3>Digital Representation</h3>
+
+                  <p>
+                    Digital implementations commonly display Umi‑Time using the
+                    standard textual representations defined by this
+                    specification.
+                  </p>
+
+                  <p>
+                    The simplest form consists only of the umi and umi‑second
+                    fields:
+                  </p>
+
+                  <pre><code>251:055</code></pre>
+
+                  <p>
+                    Digital implementations may optionally provide Layer 2 local
+                    context through:
+                  </p>
+
+                  <ul>
+                    <li>day‑phase suffixes</li>
+                    <li>longitude offset suffixes</li>
+                    <li>local Umi‑Date displays</li>
+                  </ul>
+
+                  <p>
+                    Layer 3 solar context is commonly omitted from textual and
+                    compact digital displays to preserve clarity and legibility.
+                  </p>
+
+                  <p>
+                    Larger digital interfaces may optionally provide solar
+                    context through additional indicators, charts, maps,
+                    timelines, or graphical visualizations.
+                  </p>
+                </li>
+
+                <li>
+                  <h3>Cartographic Representation</h3>
+
+                  <p>
+                    Maps provide another effective representation of Umi‑Time.
+                  </p>
+
+                  <p>
+                    A cartographic implementation may display the universal
+                    Umi‑Time value together with geographic location and
+                    optional day/night boundaries.
+                  </p>
+
+                  <p>
+                    Such representations emphasize the relationship between a
+                    shared UT coordinate and its varying local interpretations
+                    across Earth's longitudes.
+                  </p>
+                </li>
+              </ol>
             </li>
             <li>
               <h2>Test Vectors (Informative)</h2>
@@ -2838,6 +2766,76 @@ UT_sunset                  = 112.8345ᵘ  → 112:200  (07:31:20 UTC)   θ = 252
              UT_noon (physical) = 160.5573ᵘ  → 160:134  (10:42:13 UTC)</code></pre>
                 </li>
               </ol>
+            </li>
+            <li>
+              <h2>Licensing</h2>
+
+              <p>
+                This specification is published under the CC-BY-4.0 License. The
+                license applies to the text of the specification itself and does
+                not impose any licensing requirements on software, hardware, or
+                documentation that implements Umi‑Time.
+              </p>
+
+              <p>
+                Implementations may use
+                <strong>any license</strong>—open‑source or proprietary—provided
+                they accurately implement the normative requirements of Umi‑Time
+                and do not present Umi‑Time as a different or incompatible time
+                presentation standard. The CC-BY-4.0 License governing this
+                specification does not extend to, or restrict, independent
+                implementations.
+              </p>
+
+              <p>
+                Derivative works, extensions, and alternative presentations of
+                the specification are permitted under the terms of the CC-BY-4.0
+                License, so long as references to Umi‑Time remain truthful and
+                consistent with the standard defined here.
+              </p>
+            </li>
+            <li>
+              <h2>Summary</h2>
+
+              <p>
+                Umi‑Time is a UTC‑based representation standard that presents
+                UTC as a universal, location‑independent timestamp for global
+                coordination. It expresses the UTC day as a continuous 360‑umi
+                cycle mapped exactly from UTC, ensuring that umi values advance
+                at a constant rate everywhere on Earth and that every moment has
+                a single shared value. This provides humanity with a common
+                daily reference that remains stable across all longitudes.
+              </p>
+
+              <p>
+                While the Umi‑Time coordinate is universal, local interpretation
+                is determined by the observer's longitude. This
+                longitude‑derived context establishes the relationship between
+                the universal Umi‑Time value and the observer's local day
+                without altering the underlying umi progression.
+              </p>
+
+              <p>
+                Solar context—including
+                <a href="#sunrise-sunset">sunrise</a>,
+                <a href="#sunrise-sunset">sunset</a>, twilight phases, and
+                <a href="#physical-solar-noon">physical solar noon</a>—is
+                computed independently from the Umi‑Time coordinate. These solar
+                events provide additional information about the observer's solar
+                environment without affecting the universal time scale or its
+                longitude‑based local interpretation.
+              </p>
+              <p>
+                This separation of concerns allows Umi‑Time to be both globally
+                uniform and locally meaningful: a single universal time
+                representation enriched by longitude‑derived local
+                interpretation and optional solar context. This specification
+                defines the umi and umi‑second fields, the permitted textual
+                formats, the optional local‑context suffixes, and the rules for
+                parsing, validation, computation, and presentation, establishing
+                a coherent foundation for software, science, communication, and
+                human coordination at planetary scale.
+              </p>
             </li>
           </ol>
         </main>

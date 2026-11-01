@@ -51,7 +51,6 @@ The website embeds this repository via a Git submodule. It does not modify or du
 
 This repository exists to:
 - provide a **single authoritative source** for the Umi‑Time standard
-- maintain a **stable, citable artifact** for DOI publication
 - keep the specification **independent** from the website and implementations
 - ensure the spec can be viewed and archived **without build tooling**
 - support embedding in other contexts (e.g., documentation, research, teaching)
@@ -71,14 +70,6 @@ Each tagged release represents a stable, citable version of the standard using S
 Because this repository maintains the canonical standard, direct changes to the core specification follow a strict review protocol. 
 * To report errata, ambiguities, or formatting typos, please open an Issue.
 * For architectural modifications or changes to the time mapping formulas, please start a discussion topic before drafting a Pull Request.
-
----
-
-## Citation
-
-If you reference this specification in an academic paper, technical report, or software implementation, please cite it as follows:
-
-> Brannon, D. & Umi-Time Contributors. (2026). *Umi-Time Specification: A Universal Time Representation with Local Presentation Mapping* (Version 1.0.0). DOI: [Insert DOI Here](https://doi.org)
 
 ---
 

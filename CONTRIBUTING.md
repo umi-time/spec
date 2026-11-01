@@ -69,7 +69,7 @@ The spec is normative; implementation notes belong in other repos.
 ## Licensing
 
 All contributions to the specification are licensed under **CC‑BY‑4.0**.  
-By contributing, you agree to release your work under this license, and you agree that attribution may be collectively managed under the Umi-Time project identity rather than via individual line-item credits in downstream implementations.
+By contributing, you agree to release your work under this license, and you agree that attribution may be collectively managed under the Umi‑Time project identity rather than via individual line-item credits in downstream implementations.
 
 ---
 

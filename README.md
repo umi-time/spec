@@ -1,6 +1,6 @@
 # Umi‑Time Specification
 
-**Umi-Time gives us one shared number for the exact same instant globally, while presenting it in a way that is locally meaningful.** 
+**Umi‑Time gives us one shared number for the exact same instant globally, while presenting it in a way that is locally meaningful.** 
 
 Rather than creating a new time scale, Umi‑Time builds on UTC by expressing the UTC day as a continuous 360‑umi cycle and layering locally meaningful presentation on top of it. This repository contains the canonical, self-contained standard that defines how this single universal rhythm can be combined with local coordinates—allowing any digital, textual, or visual interface to ground the shared global number under an observer's local sky without altering the underlying value.
 
@@ -41,7 +41,7 @@ Open `spec.html` directly from your file manager into any modern web browser. Al
 *Note: If your browser's local security policy restricts loading font files directly from disk (`file://`), you can serve the directory using a lightweight local server (e.g., `python -m http.server` or `npx serve`).*
 
 ### **On the Website**
-The official, rendered version of this standard is viewable online at the [Umi-Time Specification Page](https://umitime.com). 
+The official, rendered version of this standard is viewable online at the [Umi‑Time Specification Page](https://umitime.com). 
 
 The website embeds this repository via a Git submodule. It does not modify or duplicate the spec; it simply displays this same canonical HTML asset.
 
@@ -76,4 +76,4 @@ Because this repository maintains the canonical standard, direct changes to the 
 ## License
 
 CC-BY-4.0 License  
-© 2026 Daniel Brannon and Umi-Time Contributors
+© 2026 Daniel Brannon and Umi‑Time Contributors

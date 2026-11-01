@@ -163,9 +163,7 @@
                   <p>
                     The longitude‑dependent
                     <a href="#umi-time-umi">umi</a> value corresponding to the
-                    midpoint of the local <a href="#umi-day">Umi‑Day</a>. In
-                    analog implementations, Umi‑Time noon is conventionally
-                    displayed at the top of the dial.
+                    midpoint of the local <a href="#umi-day">Umi‑Day</a>.
                   </p>
                 </li>
                 <li>
@@ -174,9 +172,7 @@
                     The longitude‑dependent
                     <a href="#umi-time-umi">umi</a> value corresponding to the
                     boundary between consecutive
-                    <a href="#umi-day">Umi‑Day</a> cycles. In analog
-                    implementations, Umi‑Time midnight is conventionally
-                    displayed at the bottom of the dial.
+                    <a href="#umi-day">Umi‑Day</a> cycles.
                   </p>
                 </li>
                 <li>
@@ -912,9 +908,8 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                         day (no sunrise). Implementations shall detect both
                         cases, skip the
                         <a href="#sunrise-sunset">sunrise/sunset</a>
-                        calculations, and distinguish them and distinguish them
-                        as continuous daylight or continuous darkness
-                        conditions.
+                        calculations, and distinguish them as continuous
+                        daylight or continuous darkness conditions.
                       </p>
                     </li>
                     <li>
@@ -1671,10 +1666,7 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                   <p>
                     A Umi‑Time value may be followed by a local context suffix
                     to indicate the observer’s position within the Umi-Day at
-                    the moment represented by that Umi‑Time value. These
-                    suffixes provide the textual equivalent of the visual solar
-                    ring, conveying whether the value corresponds to morning,
-                    afternoon, evening, or night for the observer.
+                    the moment represented by that Umi‑Time value.
                   </p>
 
                   <p>
@@ -1810,10 +1802,9 @@ umi-second = UTC_seconds_of_day mod 240</code></pre>
                         <a href="#umi-time-noon">Umi‑Time noon</a> and
                         <a href="#umi-time-midnight">Umi‑Time midnight</a>
                         generally occur within minutes of their physical solar
-                        counterparts, this geometric division provides a
-                        practical approximation of the
-                        <a href="#physical-solar-day">physical solar day</a>
-                        while remaining simple to compute.
+                        counterparts, these subdivisions provide a practical
+                        approximation of local time-of-day progression while
+                        remaining simple to compute.
                       </p>
 
                       <p>
@@ -2689,13 +2680,12 @@ umi-representation = standalone | combined ;</code></pre>
               <h2>Test Vectors (Informative)</h2>
               <p>
                 The following values were computed with the formulas in
-                <a href="#solar-event-computation-formulas"
-                  >Solar Event Computation Formulas</a
-                >, including one re‑evaluation of \(\delta\) and EoT at the
-                estimated event time and \(h_0 = -0.833^\circ\). Umi values are
-                given to four decimal places; textual values are rounded to the
-                nearest umi‑second. Implementations should reproduce the textual
-                values to within ±1 umi‑second.
+                <a href="#solar-context">Solar Context</a>, including one
+                re‑evaluation of \(\delta\) and EoT at the estimated event time
+                and \(h_0 = -0.833^\circ\). Umi values are given to four decimal
+                places; textual values are rounded to the nearest umi‑second.
+                Implementations should reproduce the textual values to within ±1
+                umi‑second.
               </p>
 
               <ol>

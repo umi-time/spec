@@ -41,7 +41,7 @@ Open `spec.html` directly from your file manager into any modern web browser. Al
 *Note: If your browser's local security policy restricts loading font files directly from disk (`file://`), you can serve the directory using a lightweight local server (e.g., `python -m http.server` or `npx serve`).*
 
 ### **On the Website**
-The official, rendered version of this standard is viewable online at the [Umi‑Time Specification Page](https://umitime.com). 
+The official, rendered version of this standard is viewable online at the [Umi‑Time Specification Page](https://umitime.com/spec/). 
 
 The website embeds this repository via a Git submodule. It does not modify or duplicate the spec; it simply displays this same canonical HTML asset.
 

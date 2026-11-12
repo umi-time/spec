@@ -1,15 +1,15 @@
 cff-version: "1.2.0"
-title: "Umi‑Time Specification"
+title: "Umi-Time Specification"
 abstract: >
-  The Umi‑Time Specification defines a uniform presentation of UTC as a 360-unit
-  cycle. Umi‑Time gives us one shared number for the exact same instant globally,
+  The Umi-Time Specification defines a uniform presentation of UTC as a 360-unit
+  cycle. Umi-Time gives us one shared number for the exact same instant globally,
   while presenting it in a way that is locally meaningful across visual, textual,
   and digital interfaces.
 authors:
   - family-names: Brannon
     given-names: Daniel
-    affiliation: Umi‑Time Project
-  - name: "Umi‑Time Contributors"
+    affiliation: Umi-Time Project
+  - name: "Umi-Time Contributors"
 keywords:
   - time-standard
   - utc-presentation
@@ -18,7 +18,7 @@ keywords:
   - solar-geometry
 license: CC-BY-4.0
 repository-code: "https://github.com/umi-time/spec"
-url: "https://www.umitime.com/spec"
+url: "https://www.umitime.com/spec/"
 version: "1.0.0"
 date-released: "2026-11-01"
 message: "If you use this specification, please cite it using the metadata above."

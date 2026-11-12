@@ -1,5 +1,7 @@
 # Umi‑Time Specification
 
+[![DOI](https://zenodo.org/badge/1432917590.svg)](https://doi.org/10.5281/zenodo.24152725)
+
 **Umi‑Time gives us one shared number for the exact same instant globally, while presenting it in a way that is locally meaningful.** 
 
 Rather than creating a new time scale, Umi‑Time builds on UTC by expressing the UTC day as a continuous 360‑umi cycle and layering locally meaningful presentation on top of it. This repository contains the canonical, self-contained standard that defines how this single universal rhythm can be combined with local coordinates—allowing any digital, textual, or visual interface to ground the shared global number under an observer's local sky without altering the underlying value.
@@ -70,6 +72,17 @@ Each tagged release represents a stable, citable version of the standard using S
 Because this repository maintains the canonical standard, direct changes to the core specification follow a strict review protocol. 
 * To report errata, ambiguities, or formatting typos, please open an Issue.
 * For architectural modifications or changes to the time mapping formulas, please start a discussion topic before drafting a Pull Request.
+
+---
+
+## Citation
+
+If you reference or build upon the Umi-Time specification, please cite it using the metadata in [`CITATION.cff`](CITATION.cff) or via Zenodo:
+
+* **Latest Version (Concept DOI):** [10.5281/zenodo.24152725](https://doi.org/10.5281/zenodo.24152725)
+* **Version 1.0.0 (Archival Snapshot):** [10.5281/zenodo.24152726](https://doi.org/10.5281/zenodo.24152726)
+
+> Brannon, D., & Umi-Time Contributors. (2026). *Umi-Time Specification* (Version 1.0.0). Zenodo. https://doi.org/10.5281/zenodo.24152726
 
 ---
 
